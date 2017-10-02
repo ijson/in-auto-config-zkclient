@@ -13,6 +13,16 @@
 1. 使用本地文件读取,需要在VMOption中添加:`-Dconfig.enableZookeeper=false` 即可
 
 
+#### 引用方式
+
+```
+<dependency>
+  <groupId>com.ijson.common</groupId>
+  <artifactId>in-auto-config-zkclient</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
 #### 远程拉取服务端配置项
 > 指的是需要从远程服务端获取配置更新,服务端配置文件修改后,自动下载到本地,达到不重启服务,即可修改本地配置文件的方案,此模式会与zookeeper建立心跳链接,推荐内网使用此模式
 
