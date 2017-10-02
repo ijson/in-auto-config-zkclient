@@ -18,12 +18,12 @@ public class ConfigFactoryTest {
 
     @Test
     public void getConfigContent() throws InterruptedException {
-        //for (int i = 0; i < 100; i++) {
-         //   Thread.sleep(5000);
+        for (int i = 0; i < 100; i++) {
+            Thread.sleep(1000);
             ConfigFactory.getConfig("role_json_600", (value) -> {
                 System.out.println(">>>>>>>>>>>>"+value.getString());
             });
-        //}
+        }
     }
 
 }

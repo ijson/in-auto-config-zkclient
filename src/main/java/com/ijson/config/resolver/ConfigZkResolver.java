@@ -17,28 +17,28 @@ import java.net.URL;
 @Slf4j
 public class ConfigZkResolver extends ConfigurableZkResolver {
     protected void customSettings(ByteArrayOutputStream out) {
-        String key = "cms.url";
+        String key = "config.url";
         Config appConfig = ConfigHelper.getApplicationConfig();
-        String cms = appConfig.get(key);
-        if (Strings.isNullOrEmpty(cms)) {
-            cms = System.getProperty(key);
+        String configURL = appConfig.get(key);
+        if (Strings.isNullOrEmpty(configURL)) {
+            configURL = System.getProperty(key);
         }
-        if (Strings.isNullOrEmpty(cms)) {
+        if (Strings.isNullOrEmpty(configURL)) {
             String hostname = HostUtil.getHostName();
             if (hostname.endsWith("tr0.cn") || "tr0".equals(System.getenv("ENVIRONMENT_TYPE"))/*k8s*/) {
-                cms = "http://config.tr0.cn/in/config/api";
+                configURL = "http://config.tr0.cn/in/config/api";
             } else {
-                cms = "http://config.ijson.com/in/config/api";
+                configURL = "http://config.ijson.com/in/config/api";
             }
         }
         String name = appConfig.get("process.name");
         if (!Strings.isNullOrEmpty(appConfig.get("custom.zk.server.url"))) {
-            cms = appConfig.get("custom.zk.server.url");
+            configURL = appConfig.get("custom.zk.server.url");
         }
         if (Strings.isNullOrEmpty(name)) {
             name = "in-zookeeper";
         }
-        String s = cms + "?profile=" + appConfig.get("process.profile", "dev") + "&name=" + name;
+        String s = configURL + "?profile=" + appConfig.get("process.profile", "dev") + "&name=" + name;
         fetchContent(s, out);
     }
 
