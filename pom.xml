@@ -8,7 +8,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-
+    <version>1.0.1-SNAPSHOT</version>
     <artifactId>in-auto-config-zkclient</artifactId>
     <packaging>jar</packaging>
 
@@ -34,9 +34,9 @@
 
 
     <scm>
-        <url>https://github.com/ijson/in-auto-config</url>
-        <connection>scm:git:https://github.com/ijson/in-auto-config.git</connection>
-        <developerConnection>scm:git:https://github.com/ijson/in-auto-config.git</developerConnection>
+        <url>https://github.com/ijson/in-auto-config-zkclient</url>
+        <connection>scm:git:https://github.com/ijson/in-auto-config-zkclient.git</connection>
+        <developerConnection>scm:git:https://github.com/ijson/in-auto-config-zkclient.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -91,16 +91,6 @@
 
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.ext</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -183,7 +173,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5.3</version>
                 <configuration>
-                    <tagBase>https://github.com/ijson/in-auto-config/tags/</tagBase>
+                    <tagBase>https://github.com/ijson/in-auto-config-zkclient/tags</tagBase>
                 </configuration>
             </plugin>
             <plugin>
@@ -192,7 +182,7 @@
                 <version>2.10.4</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <doctitle>in-auto-config</doctitle>
+                    <doctitle>in-auto-config-zkclient</doctitle>
                     <locale>en_US</locale>
                 </configuration>
                 <executions>
