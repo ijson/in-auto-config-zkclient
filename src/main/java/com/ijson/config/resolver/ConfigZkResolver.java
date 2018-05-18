@@ -3,7 +3,6 @@ package com.ijson.config.resolver;
 import com.google.common.base.Strings;
 import com.ijson.config.base.Config;
 import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.helper.HostUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
@@ -16,6 +15,9 @@ import java.net.URL;
 
 @Slf4j
 public class ConfigZkResolver extends ConfigurableZkResolver {
+
+
+
     protected void customSettings(ByteArrayOutputStream out) {
         String key = "config.url";
         Config appConfig = ConfigHelper.getApplicationConfig();
@@ -24,12 +26,7 @@ public class ConfigZkResolver extends ConfigurableZkResolver {
             configURL = System.getProperty(key);
         }
         if (Strings.isNullOrEmpty(configURL)) {
-            String hostname = HostUtil.getHostName();
-            if (hostname.endsWith("tr0.cn") || "tr0".equals(System.getenv("ENVIRONMENT_TYPE"))/*k8s*/) {
-                configURL = "http://config.tr0.cn/in/config/api";
-            } else {
-                configURL = "http://config.ijson.com/in/config/api";
-            }
+            configURL = "http://config.ijson.com/in/config/api";
         }
         String name = appConfig.get("process.name");
         if (!Strings.isNullOrEmpty(appConfig.get("custom.zk.server.url"))) {

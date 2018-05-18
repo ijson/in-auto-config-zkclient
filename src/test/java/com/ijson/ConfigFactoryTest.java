@@ -12,7 +12,7 @@ public class ConfigFactoryTest {
 
     @Test
     public void getConfigName() {
-        ConfigFactory.getConfig("in-test-02").getName();
+        ConfigFactory.getConfig("ddddddd").getName();
     }
 
 
@@ -20,7 +20,7 @@ public class ConfigFactoryTest {
     public void getConfigContent() throws InterruptedException {
         for (int i = 0; i < 100; i++) {
             Thread.sleep(1000);
-            ConfigFactory.getConfig("role_json_600", (value) -> {
+            ConfigFactory.getConfig("fs-workflow-rest-proxy", (value) -> {
                 System.out.println(">>>>>>>>>>>>"+value.getString());
             });
         }

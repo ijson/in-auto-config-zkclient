@@ -49,3 +49,5 @@ http://config.ijson.com/in/config/api?profile=develop&name=cms-zookeeper
 zookeeper.servers=115.29.102.69:2181 zookeeper.authenticationType=digest zookeeper.authentication=in:ijson zookeeper.basePath=/in/config
 ```
 
+
+-Dprocess.profile=ceshi113 -Dzookeeper.servers=http://localhost:8080/in/config/api -Dprocess.name=cms-zookeeper -Dconfig.enableZookeeper=true
