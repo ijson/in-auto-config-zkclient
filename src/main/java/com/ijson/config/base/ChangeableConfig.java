@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class ChangeableConfig extends Config implements IChangeableConfig {
     private final String name;
     private final IChangeable eventBus;
-    private String profile = "local";
+    private String profile = ConfigConstants.profile;
 
     public ChangeableConfig(String name) {
         this.name = name;
@@ -23,7 +23,7 @@ public class ChangeableConfig extends Config implements IChangeableConfig {
         return profile;
     }
 
-    public void setProfile(String profile) {
+    protected void setProfile(String profile) {
         this.profile = profile;
     }
 

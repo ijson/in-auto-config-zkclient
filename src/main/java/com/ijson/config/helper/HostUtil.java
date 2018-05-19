@@ -5,21 +5,23 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import static com.ijson.config.base.ConfigConstants.*;
+
 /**
  * Created by cuiyongxu on 17/8/27.
  */
 @Slf4j
 public class HostUtil {
 
-    public static String getHostName() {
-        if (System.getenv("COMPUTERNAME") != null) {
-            return System.getenv("COMPUTERNAME");
+    static String getHostName() {
+        if (System.getenv(computer_name) != null) {
+            return System.getenv(computer_name);
         } else {
             return getHostNameForLinux();
         }
     }
 
-    public static String getHostNameForLinux() {
+    private static String getHostNameForLinux() {
         try {
             return (InetAddress.getLocalHost()).getHostName();
         } catch (UnknownHostException uhe) {
@@ -30,7 +32,7 @@ public class HostUtil {
                     return host.substring(0, colon);
                 }
             }
-            return "UnknownHost";
+            return unknown_host;
         }
     }
 

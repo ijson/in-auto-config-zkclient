@@ -11,10 +11,6 @@ import static java.lang.Long.parseLong;
 import static java.lang.management.ManagementFactory.getPlatformMBeanServer;
 
 public class JmxHelper {
-    /**
-     * The base of all the helper object names.
-     */
-    public static final String objectNameBase = "com.javamonitor:type=";
 
     private static MBeanServer findMBeanServer(final ObjectName objectName) {
         final List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(null);

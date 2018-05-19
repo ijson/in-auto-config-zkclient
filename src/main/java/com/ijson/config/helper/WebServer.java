@@ -6,6 +6,7 @@ import javax.management.AttributeNotFoundException;
 import javax.management.ObjectName;
 import java.util.Collection;
 
+import static com.ijson.config.base.ConfigConstants.Jmx.*;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.Math.max;
@@ -17,23 +18,23 @@ import static java.lang.Thread.sleep;
 public class WebServer {
 
     public static boolean isTomcat() {
-        return JmxHelper.mbeanExists("Catalina:type=Server");
+        return JmxHelper.mbeanExists(catalina_type_server);
     }
 
     public static boolean isJBoss() {
-        return JmxHelper.mbeanExists("jboss.system:type=Server");
+        return JmxHelper.mbeanExists(jboss_system_type_server);
     }
 
     public static boolean isJetty() {
-        return JmxHelper.mbeanExists("org.mortbay.jetty:type=server,id=0");
+        return JmxHelper.mbeanExists(org_mortbay_jetty_type_server_id);
     }
 
     public static boolean isJetty5() {
-        return JmxHelper.mbeanExists("org.mortbay:jetty=default");
+        return JmxHelper.mbeanExists(org_mortbay_jetty);
     }
 
     public static boolean isResin() {
-        return JmxHelper.mbeanExists("resin:type=Resin");
+        return JmxHelper.mbeanExists(resin_type);
     }
 
     public static boolean isGlassfish() {

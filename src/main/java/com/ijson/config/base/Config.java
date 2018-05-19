@@ -10,10 +10,10 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+import static com.ijson.config.base.ConfigConstants.UTF8;
+
 @Slf4j
 public class Config extends Properties {
-    public static final Charset UTF8 = Charset.forName("UTF-8");
-    public static final Charset GBK = Charset.forName("GBK");
     private boolean parsed = false;
     private byte[] content;
 

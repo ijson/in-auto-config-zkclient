@@ -3,10 +3,10 @@ package com.ijson.config.helper;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ijson.config.base.Config;
+import com.ijson.config.base.ConfigConstants;
 import com.ijson.config.base.ProcessInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -17,7 +17,6 @@ import org.apache.curator.retry.BoundedExponentialBackoffRetry;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,10 +28,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static com.ijson.config.base.ConfigConstants.*;
+
 @Slf4j
 public class ConfigHelper {
 
-    public static final Charset UTF8 = Charset.forName("UTF-8");
 
     public static ThreadPoolExecutor EXECUTOR =
             new ThreadPoolExecutor(0, 1, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setDaemon(true)
@@ -50,8 +50,8 @@ public class ConfigHelper {
         return LazyHolder3.CONFIG;
     }
 
-    public static String getServerInnerIP() {
-        if ("DOCKER".equals(System.getenv("MACHINE_TYPE"))) {
+    private static String getServerInnerIP() {
+        if (docker.equals(System.getenv(machine_type))) {
             try {
                 return HostUtil.getHostName();
             } catch (Exception e) {
@@ -80,25 +80,25 @@ public class ConfigHelper {
             return basePath;
         }
         //查找若干文件以便找到classes根目录
-        String files = "autoconf,log4j.properties,logback.xml,application.properties";
+        String files = ConfigConstants.configFiles;
         for (String i : Splitter.on(',').split(files)) {
             String s = scanResource(i);
             if (s != null) {
-                basePath = new File(s).toPath().getParent().resolve("autoconf");
+                basePath = new File(s).toPath().getParent().resolve(ConfigConstants.autoconf);
                 File root = basePath.toFile();
                 if (root.exists() || root.mkdir()) {
                     return basePath;
                 }
             }
         }
-        return new File(System.getProperty("java.io.tmpdir")).toPath();
+        return new File(System.getProperty(ConfigConstants.tmpdir)).toPath();
     }
 
     /**
      * 看是否通过环境变量指明了本地文件cache的路径
      */
     private static Path scanProperty() {
-        String localCachePath = System.getProperty("config.path");
+        String localCachePath = System.getProperty(ConfigConstants.configPath);
         if (!Strings.isNullOrEmpty(localCachePath)) {
             File f = new File(localCachePath);
             f.mkdirs();
@@ -119,9 +119,9 @@ public class ConfigHelper {
             while (ps.hasMoreElements()) {
                 URL url = ps.nextElement();
                 String s = url.toString();
-                if (s.startsWith("file:/")) {
-                    String os = System.getProperty("os.name");
-                    if (os != null && os.toLowerCase().contains("windows")) {
+                if (s.startsWith(fileStartWith)) {
+                    String os = System.getProperty(osName);
+                    if (os != null && os.toLowerCase().contains(windows)) {
                         return s.substring(6);
                     } else {
                         return s.substring(5);
@@ -140,12 +140,12 @@ public class ConfigHelper {
      * @return 加载的配置信息
      */
     private static Config scanApplicationConfig() {
-        List<String> names = Lists.newArrayList("application-default.properties", "application.properties");
-        String envProfile = System.getProperty("process.profile");
-        String springProfile = System.getProperty("spring.profiles.active", "develop");
+        List<String> names = applicationFiles;
+        String envProfile = System.getProperty(process_profile);
+        String springProfile = System.getProperty(spring_profiles_active, develop);
         String profile = MoreObjects.firstNonNull(envProfile, springProfile);
         if (!Strings.isNullOrEmpty(profile)) {
-            String name = "application-" + profile + ".properties";
+            String name = application_suffix + profile + before_properties;
             if (!names.contains(name)) {
                 names.add(0, name);
             }
@@ -166,8 +166,8 @@ public class ConfigHelper {
             }
         }
         Map<String, String> defaults = Maps.newHashMap();
-        defaults.put("process.profile", profile);
-        defaults.put("process.name", "unknown");
+        defaults.put(process_profile, profile);
+        defaults.put(process_name, unknown);
         Map<String, String> props = Maps.newHashMap();
         Set<String> keys = System.getProperties().stringPropertyNames();
         for (String key : keys) {
@@ -178,9 +178,9 @@ public class ConfigHelper {
             }
         }
         // 以配置文件中配置的profile为准
-        String fileProfile = fileConfig.get("process.profile");
+        String fileProfile = fileConfig.get(process_profile);
         if (!Strings.isNullOrEmpty(fileProfile) && Strings.isNullOrEmpty(envProfile)) {
-            props.put("process.profile", fileProfile);
+            props.put(process_profile, fileProfile);
         }
         Config c = new Config();
         //查找顺序:系统默认 < 文件配置 < 环境变量配置
@@ -203,14 +203,14 @@ public class ConfigHelper {
     private static ProcessInfo scanProcessInfo() {
         Config config = getApplicationConfig();
         ProcessInfo info = new ProcessInfo();
-        info.setName(config.get("process.name"));
-        info.setProfile(config.get("process.profile"));
-        if ("DOCKER".equals(System.getenv("MACHINE_TYPE"))) {
-            info.setIp(System.getenv("CLUSTER_IP"));
-            info.setPort(System.getenv("TOMCAT_PORT"));
+        info.setName(config.get(process_name));
+        info.setProfile(config.get(process_profile));
+        if (docker.equals(System.getenv(machine_type))) {
+            info.setIp(System.getenv(cluster_ip));
+            info.setPort(System.getenv(tomcat_port));
         } else {
-            info.setIp(config.get("process.ip", getServerInnerIP()));
-            String s = get(config, "process.port", null);
+            info.setIp(config.get(process_ip, getServerInnerIP()));
+            String s = get(config, process_port, null);
             if (Strings.isNullOrEmpty(s)) {
                 try {
                     Integer port = WebServer.getHttpPort();
@@ -259,7 +259,7 @@ public class ConfigHelper {
         private static final Config CONFIG = scanApplicationConfig();
     }
 
-    public static byte[] newBytes(String s) {
+    private static byte[] newBytes(String s) {
         if (s == null) {
             return null;
         }
