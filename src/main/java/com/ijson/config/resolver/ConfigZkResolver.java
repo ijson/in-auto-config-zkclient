@@ -12,30 +12,34 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.ijson.config.base.ConfigConstants.*;
+import static com.ijson.config.base.ConfigConstants.ConfKeys.config_url;
+import static com.ijson.config.base.ConfigConstants.ConfKeys.in_zookeeper;
+import static com.ijson.config.base.ConfigConstants.Ijson.*;
+
 
 @Slf4j
 public class ConfigZkResolver extends ConfigurableZkResolver {
 
 
-
     protected void customSettings(ByteArrayOutputStream out) {
-        String key = "config.url";
         Config appConfig = ConfigHelper.getApplicationConfig();
-        String configURL = appConfig.get(key);
+        String configURL = appConfig.get(config_url);
+
         if (Strings.isNullOrEmpty(configURL)) {
-            configURL = System.getProperty(key);
+            configURL = System.getProperty(config_url);
         }
         if (Strings.isNullOrEmpty(configURL)) {
-            configURL = "http://config.ijson.com/in/config/api";
+            configURL = configUrl;
         }
-        String name = appConfig.get("process.name");
+        String name = appConfig.get(process_name);
         if (!Strings.isNullOrEmpty(appConfig.get("custom.zk.server.url"))) {
             configURL = appConfig.get("custom.zk.server.url");
         }
         if (Strings.isNullOrEmpty(name)) {
-            name = "in-zookeeper";
+            name = in_zookeeper;
         }
-        String s = configURL + "?profile=" + appConfig.get("process.profile", "dev") + "&name=" + name;
+        String s = configURL + "?profile=" + appConfig.get(process_profile, develop) + "&name=" + name;
         fetchContent(s, out);
     }
 

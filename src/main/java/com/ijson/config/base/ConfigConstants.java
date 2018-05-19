@@ -39,6 +39,21 @@ public interface ConfigConstants {
     String object_name_base = "com.javamonitor:type=";
     List<String> applicationFiles = Lists.newArrayList("application-default.properties", "application.properties");
 
+    interface ConfKeys {
+        String config_enable_zookeeper = "config.enableZookeeper";
+        String zookeeper_servers = "zookeeper.servers";
+        String zookeeper_authentication = "zookeeper.authentication";
+        String zookeeper_authentication_type = "zookeeper.authenticationType";
+        String zookeeper_base_path = "zookeeper.basePath";
+        String in_zookeeper = "in-zookeeper";
+        String config_url = "config.url";
+    }
+
+
+    interface Ijson {
+        String configUrl = "http://config.ijson.com/in/config/api";
+    }
+
     interface Jmx {
         String catalina_type_server = "Catalina:type=Server";
         String jboss_system_type_server = "jboss.system:type=Server";

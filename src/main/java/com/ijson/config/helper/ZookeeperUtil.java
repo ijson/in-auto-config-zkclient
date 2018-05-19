@@ -11,12 +11,12 @@ import org.apache.zookeeper.data.Stat;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import static com.ijson.config.base.ConfigConstants.UTF8;
+
 /**
  * zookeeper工具类
  */
 public class ZookeeperUtil {
-    public static final Charset UTF8 = Charset.forName("UTF-8");
-    public static final Charset GBK = Charset.forName("GBK");
 
     private static CuratorFramework curator = null;
 

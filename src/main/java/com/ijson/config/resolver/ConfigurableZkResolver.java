@@ -16,13 +16,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.ijson.config.base.ConfigConstants.ConfKeys.*;
+
 @Slf4j
 public class ConfigurableZkResolver implements IZkResolver {
-    public static final String CONFIG_ENABLE_ZOOKEEPER = "config.enableZookeeper";
-    public static final String ZOOKEEPER_SERVERS = "zookeeper.servers";
-    public static final String ZOOKEEPER_AUTHENTICATION = "zookeeper.authentication";
-    public static final String ZOOKEEPER_AUTHENTICATION_TYPE = "zookeeper.authenticationType";
-    public static final String ZOOKEEPER_BASE_PATH = "zookeeper.basePath";
     private boolean enable = true;
     private String servers;
     private String auth;
@@ -39,7 +36,7 @@ public class ConfigurableZkResolver implements IZkResolver {
     public void resolve() {
         Config app = ConfigHelper.getApplicationConfig();
         // 本地配置禁用zookeeper,就直接返回了
-        if (!app.getBool(CONFIG_ENABLE_ZOOKEEPER, true)) {
+        if (!app.getBool(config_enable_zookeeper, true)) {
             enable = false;
             return;
         }
@@ -63,19 +60,19 @@ public class ConfigurableZkResolver implements IZkResolver {
 
         Config config = new Config();
         config.copyOf(out.toByteArray());
-        servers = config.get(ZOOKEEPER_SERVERS);
+        servers = config.get(zookeeper_servers);
         if (Strings.isNullOrEmpty(servers)) {
             enable = false;
             return;
         }
-        auth = config.get(ZOOKEEPER_AUTHENTICATION);
-        authType = config.get(ZOOKEEPER_AUTHENTICATION_TYPE);
-        basePath = config.get(ZOOKEEPER_BASE_PATH, "/in/config");
+        auth = config.get(zookeeper_authentication);
+        authType = config.get(zookeeper_authentication_type);
+        basePath = config.get(zookeeper_base_path, "/in/config");
     }
 
     private void appendEnvironments(ByteArrayOutputStream out) {
         List<String> keys =
-                Lists.newArrayList(CONFIG_ENABLE_ZOOKEEPER, ZOOKEEPER_SERVERS, ZOOKEEPER_AUTHENTICATION, ZOOKEEPER_AUTHENTICATION_TYPE, ZOOKEEPER_BASE_PATH);
+                Lists.newArrayList(config_enable_zookeeper, zookeeper_servers, zookeeper_authentication, zookeeper_authentication_type, zookeeper_base_path);
         for (String i : keys) {
             try {
                 append(out, System.getProperty(i));
@@ -86,7 +83,7 @@ public class ConfigurableZkResolver implements IZkResolver {
     }
 
     private void appendAutoConfig(ByteArrayOutputStream out) {
-        Path cmsConfig = ConfigHelper.getConfigPath().resolve("in-zookeeper");
+        Path cmsConfig = ConfigHelper.getConfigPath().resolve(in_zookeeper);
         if (cmsConfig.toFile().exists()) {
             out.write('\n');
             try {
