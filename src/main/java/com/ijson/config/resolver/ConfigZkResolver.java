@@ -12,10 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.ijson.config.base.ConfigConstants.*;
 import static com.ijson.config.base.ConfigConstants.ConfKeys.config_url;
 import static com.ijson.config.base.ConfigConstants.ConfKeys.in_zookeeper;
-import static com.ijson.config.base.ConfigConstants.Ijson.*;
+import static com.ijson.config.base.ConfigConstants.Ijson.configUrl;
+import static com.ijson.config.base.ConfigConstants.*;
 
 
 @Slf4j
