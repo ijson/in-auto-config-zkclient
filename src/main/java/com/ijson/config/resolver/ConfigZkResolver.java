@@ -1,9 +1,9 @@
 package com.ijson.config.resolver;
 
 import com.google.common.base.Strings;
+
 import com.ijson.config.base.Config;
 import com.ijson.config.helper.ConfigHelper;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,16 +11,33 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
+
+import lombok.extern.slf4j.Slf4j;
 
 import static com.ijson.config.base.ConfigConstants.ConfKeys.config_url;
 import static com.ijson.config.base.ConfigConstants.ConfKeys.in_zookeeper;
 import static com.ijson.config.base.ConfigConstants.Ijson.configUrl;
-import static com.ijson.config.base.ConfigConstants.*;
+import static com.ijson.config.base.ConfigConstants.develop;
+import static com.ijson.config.base.ConfigConstants.process_name;
+import static com.ijson.config.base.ConfigConstants.process_profile;
 
 
 @Slf4j
 public class ConfigZkResolver extends ConfigurableZkResolver {
 
+    protected void readme() {
+        java.util.Locale locale = Locale.getDefault();
+        if (Locale.SIMPLIFIED_CHINESE.equals(locale)) {
+            log.info("配置\t\t\t\t\t\t|默认值\t|描述");
+            log.info("config.enableZookeeper\t|false\t|访问远程zookeeper服务器");
+            log.info("config.url\t\t\t\t|http://config.ijson.com/in/config/api|zookeeper配置获取地址,可自行编写");
+        } else if (Locale.ENGLISH.equals(locale)) {
+            log.info("Config\t\t\t\t\t\t|Default\t|description");
+            log.info("config.enableZookeeper\t|false\t|Access the remote zookeeper server");
+            log.info("config.url\t\t\t\t|http://config.ijson.com/in/config/api|zookeeper Configuration to get the address, can be written");
+        }
+    }
 
     protected void customSettings(ByteArrayOutputStream out) {
         Config appConfig = ConfigHelper.getApplicationConfig();

@@ -4,10 +4,10 @@ package com.ijson.config.resolver;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.Config;
 import com.ijson.config.helper.ConfigHelper;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,7 +16,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static com.ijson.config.base.ConfigConstants.ConfKeys.*;
+import lombok.extern.slf4j.Slf4j;
+
+import static com.ijson.config.base.ConfigConstants.ConfKeys.config_enable_zookeeper;
+import static com.ijson.config.base.ConfigConstants.ConfKeys.in_zookeeper;
+import static com.ijson.config.base.ConfigConstants.ConfKeys.zookeeper_authentication;
+import static com.ijson.config.base.ConfigConstants.ConfKeys.zookeeper_authentication_type;
+import static com.ijson.config.base.ConfigConstants.ConfKeys.zookeeper_base_path;
+import static com.ijson.config.base.ConfigConstants.ConfKeys.zookeeper_servers;
 
 @Slf4j
 public class ConfigurableZkResolver implements IZkResolver {
@@ -34,9 +41,12 @@ public class ConfigurableZkResolver implements IZkResolver {
      * </ul>
      */
     public void resolve() {
+
+        readme();
+
         Config app = ConfigHelper.getApplicationConfig();
         // 本地配置禁用zookeeper,就直接返回了
-        if (!app.getBool(config_enable_zookeeper, true)) {
+        if (!app.getBool(config_enable_zookeeper, false)) {
             enable = false;
             return;
         }
@@ -101,6 +111,8 @@ public class ConfigurableZkResolver implements IZkResolver {
      */
     protected void customSettings(ByteArrayOutputStream out) {
     }
+
+    protected void readme(){}
 
     protected void append(OutputStream out, String s) throws IOException {
         if (s != null) {

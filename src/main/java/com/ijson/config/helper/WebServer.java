@@ -1,18 +1,22 @@
 package com.ijson.config.helper;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collection;
 
 import javax.management.AttributeNotFoundException;
 import javax.management.ObjectName;
-import java.util.Collection;
 
-import static com.ijson.config.base.ConfigConstants.Jmx.*;
+import lombok.extern.slf4j.Slf4j;
+
+import static com.ijson.config.base.ConfigConstants.Jmx.catalina_type_server;
+import static com.ijson.config.base.ConfigConstants.Jmx.jboss_system_type_server;
+import static com.ijson.config.base.ConfigConstants.Jmx.org_mortbay_jetty;
+import static com.ijson.config.base.ConfigConstants.Jmx.org_mortbay_jetty_type_server_id;
+import static com.ijson.config.base.ConfigConstants.Jmx.resin_type;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Thread.sleep;
-
 
 @Slf4j
 public class WebServer {
@@ -198,7 +202,6 @@ public class WebServer {
         if (WebServer.isGlassfish()) {
             return WebServer.getGlassfishHttpPort();
         }
-        log.error("cannot detect ContainerType");
         return null;
     }
 }

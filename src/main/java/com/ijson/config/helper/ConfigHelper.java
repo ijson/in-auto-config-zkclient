@@ -5,10 +5,11 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import com.ijson.config.base.Config;
 import com.ijson.config.base.ConfigConstants;
 import com.ijson.config.base.ProcessInfo;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -28,7 +29,26 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static com.ijson.config.base.ConfigConstants.*;
+import lombok.extern.slf4j.Slf4j;
+
+import static com.ijson.config.base.ConfigConstants.UTF8;
+import static com.ijson.config.base.ConfigConstants.applicationFiles;
+import static com.ijson.config.base.ConfigConstants.application_suffix;
+import static com.ijson.config.base.ConfigConstants.before_properties;
+import static com.ijson.config.base.ConfigConstants.cluster_ip;
+import static com.ijson.config.base.ConfigConstants.develop;
+import static com.ijson.config.base.ConfigConstants.docker;
+import static com.ijson.config.base.ConfigConstants.fileStartWith;
+import static com.ijson.config.base.ConfigConstants.machine_type;
+import static com.ijson.config.base.ConfigConstants.osName;
+import static com.ijson.config.base.ConfigConstants.process_ip;
+import static com.ijson.config.base.ConfigConstants.process_name;
+import static com.ijson.config.base.ConfigConstants.process_port;
+import static com.ijson.config.base.ConfigConstants.process_profile;
+import static com.ijson.config.base.ConfigConstants.spring_profiles_active;
+import static com.ijson.config.base.ConfigConstants.tomcat_port;
+import static com.ijson.config.base.ConfigConstants.unknown;
+import static com.ijson.config.base.ConfigConstants.windows;
 
 @Slf4j
 public class ConfigHelper {

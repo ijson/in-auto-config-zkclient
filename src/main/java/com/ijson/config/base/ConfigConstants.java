@@ -36,7 +36,6 @@ public interface ConfigConstants {
     String process_port = "process.port";
     String computer_name = "COMPUTERNAME";
     String unknown_host = "UnknownHost";
-    String object_name_base = "com.javamonitor:type=";
     List<String> applicationFiles = Lists.newArrayList("application-default.properties", "application.properties");
 
     interface ConfKeys {

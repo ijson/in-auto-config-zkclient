@@ -1,6 +1,7 @@
 package com.ijson.config;
 
 import com.google.common.base.Strings;
+
 import com.ijson.config.api.IChangeListener;
 import com.ijson.config.api.IChangeableConfig;
 import com.ijson.config.api.IConfigFactory;
@@ -9,9 +10,11 @@ import com.ijson.config.base.ProcessInfo;
 import com.ijson.config.helper.ConfigHelper;
 import com.ijson.config.helper.ZookeeperUtil;
 import com.ijson.config.resolver.ConfigZkResolver;
-import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
+
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * Created by cuiyongxu on 17/8/26.

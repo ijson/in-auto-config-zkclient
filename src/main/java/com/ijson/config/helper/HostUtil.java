@@ -1,11 +1,13 @@
 package com.ijson.config.helper;
 
-import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static com.ijson.config.base.ConfigConstants.*;
+import lombok.extern.slf4j.Slf4j;
+
+import static com.ijson.config.base.ConfigConstants.computer_name;
+import static com.ijson.config.base.ConfigConstants.unknown_host;
 
 /**
  * Created by cuiyongxu on 17/8/27.
