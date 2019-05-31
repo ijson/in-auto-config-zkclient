@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.Config;
 import com.ijson.config.helper.ConfigHelper;
-import lombok.extern.slf4j.Slf4j;
+import com.ijson.config.helper.ILogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,9 +18,12 @@ import java.util.List;
 
 import static com.ijson.config.base.ConfigConstants.ConfKeys.*;
 
-@Slf4j
 public class ConfigurableZkResolver implements IZkResolver {
-    private boolean enable = true;
+
+
+    private static ILogger log = ILogger.getLogger(ConfigurableZkResolver.class);
+
+    private boolean enable = false;
     private String servers;
     private String auth;
     private String authType;
@@ -35,39 +38,37 @@ public class ConfigurableZkResolver implements IZkResolver {
      */
     public void resolve() {
         Config app = ConfigHelper.getApplicationConfig();
-        // 本地配置禁用zookeeper,就直接返回了
-        if (!app.getBool(config_enable_zookeeper, true)) {
-            enable = false;
-            return;
+        if (app.getBool(config_enable_zookeeper, false)) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            // 复制本地配置
+            try {
+                out.write(app.getContent());
+            } catch (IOException e) {
+                log.error("cannot clone from appConfig {0}", e);
+            }
+
+            // 从本地配置 autoconf/cms-zookeeper中加载配置
+            appendAutoConfig(out);
+
+            // 自定义加载配置
+            customSettings(out);
+
+            // 再把环境变量的设置导入进来覆盖
+            appendEnvironments(out);
+
+            Config config = new Config();
+            config.copyOf(out.toByteArray());
+            servers = config.get(zookeeper_servers);
+            if (Strings.isNullOrEmpty(servers)) {
+                enable = false;
+                return;
+            }
+            auth = config.get(zookeeper_authentication);
+            authType = config.get(zookeeper_authentication_type);
+            basePath = config.get(zookeeper_base_path, "/in/config");
         }
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        // 复制本地配置
-        try {
-            out.write(app.getContent());
-        } catch (IOException e) {
-            log.error("cannot clone from appConfig", e);
-        }
 
-        // 从本地配置 autoconf/cms-zookeeper中加载配置
-        appendAutoConfig(out);
-
-        // 自定义加载配置
-        customSettings(out);
-
-        // 再把环境变量的设置导入进来覆盖
-        appendEnvironments(out);
-
-        Config config = new Config();
-        config.copyOf(out.toByteArray());
-        servers = config.get(zookeeper_servers);
-        if (Strings.isNullOrEmpty(servers)) {
-            enable = false;
-            return;
-        }
-        auth = config.get(zookeeper_authentication);
-        authType = config.get(zookeeper_authentication_type);
-        basePath = config.get(zookeeper_base_path, "/in/config");
     }
 
     private void appendEnvironments(ByteArrayOutputStream out) {
@@ -77,7 +78,7 @@ public class ConfigurableZkResolver implements IZkResolver {
             try {
                 append(out, System.getProperty(i));
             } catch (IOException e) {
-                log.error("cannot append {}", i, e);
+                log.error("cannot append {0}  {1}", i, e);
             }
         }
     }
@@ -89,7 +90,7 @@ public class ConfigurableZkResolver implements IZkResolver {
             try {
                 Files.copy(cmsConfig, out);
             } catch (IOException e) {
-                log.error("cannot load from {}", cmsConfig, e);
+                log.error("cannot load from {0}  {1}", cmsConfig, e);
             }
         }
     }

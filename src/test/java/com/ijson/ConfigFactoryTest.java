@@ -1,14 +1,15 @@
 package com.ijson;
 
 import com.ijson.config.ConfigFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 /**
  * Created by cuiyongxu on 17/8/26.
  */
-@Slf4j
 public class ConfigFactoryTest {
+
+
+    //private static ILogger log = ILogger.getLogger(ConfigFactoryTest.class);
 
     @Test
     public void getConfigName() {

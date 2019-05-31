@@ -40,11 +40,11 @@ public interface ConfigConstants {
     List<String> applicationFiles = Lists.newArrayList("application-default.properties", "application.properties");
 
     interface ConfKeys {
-        String config_enable_zookeeper = "config.enableZookeeper";
-        String zookeeper_servers = "zookeeper.servers";
-        String zookeeper_authentication = "zookeeper.authentication";
-        String zookeeper_authentication_type = "zookeeper.authenticationType";
-        String zookeeper_base_path = "zookeeper.basePath";
+        String config_enable_zookeeper = "zk.enable";
+        String zookeeper_servers = "zk.servers";
+        String zookeeper_authentication = "zk.auth";
+        String zookeeper_authentication_type = "zk.authType";
+        String zookeeper_base_path = "zk.basePath";
         String in_zookeeper = "in-zookeeper";
         String config_url = "config.url";
     }

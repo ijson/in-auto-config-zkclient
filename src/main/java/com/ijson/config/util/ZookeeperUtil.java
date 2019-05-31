@@ -1,4 +1,4 @@
-package com.ijson.config.helper;
+package com.ijson.config.util;
 
 import com.ijson.config.exception.ZookeeperException;
 import org.apache.curator.framework.CuratorFramework;

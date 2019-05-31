@@ -4,8 +4,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.Files;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.util.concurrent.Uninterruptibles;
+import com.ijson.config.helper.ILogger;
 import com.ijson.config.watcher.FileUpdateWatcher;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
 public class RemoteConfigWithCache extends RemoteConfig {
+
+
+    private static ILogger log = ILogger.getLogger(RemoteConfigWithCache.class);
     private static final ThreadFactory FACTORY =
             new ThreadFactoryBuilder().setDaemon(true).setNameFormat("config-load-%d").build();
     private final File cacheFile;
@@ -44,7 +46,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
                     initZookeeper();
                 }).start();
             } catch (IOException e) {
-                log.error("cannot read {}", cacheFile);
+                log.error("cannot read {0}", cacheFile);
                 initZookeeper();
             }
         } else {
@@ -53,7 +55,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
         }
         //注册本地配置变更通知回调
         FileUpdateWatcher.getInstance().watch(cacheFile.toPath(), (path, content) -> {
-            log.info("local change: {}", path);
+            log.info("local change: {0}", path);
             refresh(content);
         });
     }
@@ -66,7 +68,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
                 FileUpdateWatcher.getInstance().mask(cacheFile.toPath());
                 Files.write(content, cacheFile);
             } catch (IOException e) {
-                log.error("cannot write {}", cacheFile);
+                log.error("cannot write {0}", cacheFile);
             }
             notifyListeners();
         }
@@ -76,7 +78,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
     protected void reload(byte[] content) {
         //避免首次启动,远程配置不存在反而覆盖了本地配置
         if ((content == null || content.length == 0) && !loadedFromZookeeper) {
-            log.warn("{} deleted, wont clean local for safety", getPath());
+            log.warn("{0} deleted, wont clean local for safety", getPath());
             return;
         }
         loadedFromZookeeper = true;

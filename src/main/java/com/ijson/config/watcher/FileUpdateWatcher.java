@@ -4,8 +4,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.ijson.config.api.IFileListener;
+import com.ijson.config.helper.ILogger;
 import com.sun.nio.file.SensitivityWatchEventModifier;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -17,8 +17,12 @@ import static java.nio.charset.CoderResult.OVERFLOW;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
-@Slf4j
 public class FileUpdateWatcher implements Runnable, AutoCloseable {
+
+
+    private static ILogger log = ILogger.getLogger(FileUpdateWatcher.class);
+
+
     /**
      * 同一个目录下会包含多个文件,每个文件又有多个listener
      */
@@ -31,7 +35,7 @@ public class FileUpdateWatcher implements Runnable, AutoCloseable {
         try {
             watchService = FileSystems.getDefault().newWatchService();
         } catch (IOException e) {
-            log.error("cannot build watchService", e);
+            log.error("cannot build watchService {0}", e);
         }
     }
 
@@ -50,14 +54,14 @@ public class FileUpdateWatcher implements Runnable, AutoCloseable {
             try {
                 WatchEvent.Kind[] events = {ENTRY_MODIFY, ENTRY_DELETE};
                 parent.register(watchService, events, SensitivityWatchEventModifier.HIGH);
-                log.info("monitor directory {}", parent);
+                log.info("monitor directory {0}", parent);
             } catch (IOException e) {
-                log.error("cannot register path:{}", parent, e);
+                log.error("cannot register path:{0}  {1}", parent, e);
             }
             files = ArrayListMultimap.create();
             watches.put(parent, files);
         }
-        log.debug("watch {}, {}", path, listener);
+        log.debug("watch {0}, {1}", path, listener);
         files.put(path, listener);
     }
 
@@ -85,11 +89,11 @@ public class FileUpdateWatcher implements Runnable, AutoCloseable {
                         WatchEvent<Path> ev = cast(event);
                         Path context = ev.context();
                         Path child = base.resolve(context);
-                        log.info("{}, {}", kind, child);
+                        log.info("{0}, {1}", kind, child);
                         //屏蔽只剩小1秒钟,避免误封禁
                         Long stamp = masks.remove(child);
                         if (stamp != null && System.currentTimeMillis() - stamp < 1000) {
-                            log.info("mask {}", child);
+                            log.info("mask {0}", child);
                             continue;
                         }
 
@@ -112,7 +116,7 @@ public class FileUpdateWatcher implements Runnable, AutoCloseable {
                     }
                 }
             } catch (InterruptedException x) {
-                log.info("{} was interrupted, now EXIT", Thread.currentThread().getName());
+                log.info("{0} was interrupted, now EXIT", Thread.currentThread().getName());
                 try {
                     watchService.close();
                 } catch (IOException ignored) {
@@ -120,7 +124,7 @@ public class FileUpdateWatcher implements Runnable, AutoCloseable {
                 log.info(FileUpdateWatcher.class.getSimpleName() + " exited");
                 return;
             } catch (Exception e) {
-                log.error("watches: {}", watches.keySet(), e);
+                log.error("watches: {0}  {1}", watches.keySet(), e);
             } finally {
                 if (key != null) {
                     key.reset();
@@ -148,11 +152,11 @@ public class FileUpdateWatcher implements Runnable, AutoCloseable {
             FileUpdateWatcher watcher = new FileUpdateWatcher();
             // 增加jvm的退出回调功能
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                log.warn("jvm exit, now try stop " + FileUpdateWatcher.class.getSimpleName());
+                log.warn("jvm exit, now try stop {0} " , FileUpdateWatcher.class.getSimpleName());
                 try {
                     instance.close();
                 } catch (Exception e) {
-                    log.error("cannot stop " + FileUpdateWatcher.class.getSimpleName(), e);
+                    log.error("cannot stop {0}  {1}",  FileUpdateWatcher.class.getSimpleName(), e);
                 }
             }));
             watcher.start();

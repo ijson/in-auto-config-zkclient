@@ -1,6 +1,6 @@
-package com.ijson.config.helper;
+package com.ijson.config.util;
 
-import lombok.extern.slf4j.Slf4j;
+import com.ijson.config.helper.ILogger;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,10 +10,12 @@ import static com.ijson.config.base.ConfigConstants.*;
 /**
  * Created by cuiyongxu on 17/8/27.
  */
-@Slf4j
 public class HostUtil {
 
-    static String getHostName() {
+
+    private static ILogger log = ILogger.getLogger(HostUtil.class);
+
+    public static String getHostName() {
         if (System.getenv(computer_name) != null) {
             return System.getenv(computer_name);
         } else {
@@ -51,7 +53,7 @@ public class HostUtil {
         try {
             return InetAddress.getByName(ip).isSiteLocalAddress();
         } catch (UnknownHostException e) {
-            log.error("cannot parse: {}", ip, e);
+            log.error("cannot parse {0}  {1}",  ip, e);
             return false;
         }
     }

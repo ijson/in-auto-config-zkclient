@@ -3,7 +3,7 @@ package com.ijson.config;
 import com.ijson.config.api.IChangeableConfig;
 import com.ijson.config.base.AbstractConfigFactory;
 import com.ijson.config.base.ProcessInfo;
-import com.ijson.config.helper.ZookeeperUtil;
+import com.ijson.config.util.ZookeeperUtil;
 import com.ijson.config.impl.RemoteConfig;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.utils.ZKPaths;

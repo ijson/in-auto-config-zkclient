@@ -7,17 +7,20 @@ import com.ijson.config.api.IConfigFactory;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.ProcessInfo;
 import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.helper.ZookeeperUtil;
+import com.ijson.config.helper.ILogger;
+import com.ijson.config.util.ZookeeperUtil;
 import com.ijson.config.resolver.ConfigZkResolver;
-import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
 
 /**
  * Created by cuiyongxu on 17/8/26.
  */
-@Slf4j
 public class ConfigFactory {
+
+    private static ILogger log = ILogger.getLogger(ConfigFactory.class);
+
+
     private ConfigFactory() {
     }
 

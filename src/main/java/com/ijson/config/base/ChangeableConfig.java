@@ -3,13 +3,15 @@ package com.ijson.config.base;
 import com.ijson.config.api.IChangeListener;
 import com.ijson.config.api.IChangeable;
 import com.ijson.config.api.IChangeableConfig;
-import com.ijson.config.helper.ZookeeperUtil;
-import lombok.extern.slf4j.Slf4j;
+import com.ijson.config.helper.ILogger;
+import com.ijson.config.util.ZookeeperUtil;
 
 import java.util.Arrays;
 
-@Slf4j
 public class ChangeableConfig extends Config implements IChangeableConfig {
+
+    private static ILogger log = ILogger.getLogger(ChangeableConfig.class);
+
     private final String name;
     private final IChangeable eventBus;
     private String profile = ConfigConstants.profile;
@@ -59,7 +61,7 @@ public class ChangeableConfig extends Config implements IChangeableConfig {
             return true;
         }
         byte[] old = getContent();
-        log.debug("change detecting\nbefore:\n{}\n\nafter:\n{}\n", ZookeeperUtil.newString(old), ZookeeperUtil.newString(now));
+        log.debug("change detecting before: {0} after:{1}", ZookeeperUtil.newString(old), ZookeeperUtil.newString(now));
         return !Arrays.equals(now, old);
     }
 }
