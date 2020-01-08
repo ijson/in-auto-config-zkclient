@@ -3,7 +3,8 @@ package com.ijson.config.resolver;
 import com.google.common.base.Strings;
 import com.ijson.config.base.Config;
 import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.helper.ILogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import static com.ijson.config.base.ConfigConstants.*;
 
 public class ConfigZkResolver extends ConfigurableZkResolver {
 
-    private static ILogger log = ILogger.getLogger(ConfigZkResolver.class);
+    public static final Logger log = LoggerFactory.getLogger(ConfigZkResolver.class);
 
     protected void customSettings(ByteArrayOutputStream out) {
         Config appConfig = ConfigHelper.getApplicationConfig();
@@ -61,11 +62,11 @@ public class ConfigZkResolver extends ConfigurableZkResolver {
                 }
             }
         } catch (MalformedURLException e) {
-            log.error("cannot parse url={0}  {1}", cmsUrl, e);
+            log.error("cannot parse url={}  {}", cmsUrl, e);
         } catch (IOException e) {
-            log.error("cannot load from url={0}  {1}", cmsUrl, e);
+            log.error("cannot load from url={}  {}", cmsUrl, e);
         } finally {
-            log.info("load zookeeper settings from {0}", cmsUrl);
+            log.info("load zookeeper settings from {}", cmsUrl);
             if (connection != null) {
                 connection.disconnect();
             }

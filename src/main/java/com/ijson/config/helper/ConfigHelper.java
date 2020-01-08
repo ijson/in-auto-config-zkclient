@@ -7,12 +7,15 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ijson.config.base.Config;
 import com.ijson.config.base.ConfigConstants;
+import com.ijson.config.base.EventBus;
 import com.ijson.config.base.ProcessInfo;
 import com.ijson.config.util.HostUtil;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.BoundedExponentialBackoffRetry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +35,7 @@ import static com.ijson.config.base.ConfigConstants.*;
 
 public class ConfigHelper {
 
-    private static ILogger log = ILogger.getLogger(ConfigHelper.class);
+    public static final Logger log = LoggerFactory.getLogger(ConfigHelper.class);
 
     public static ThreadPoolExecutor EXECUTOR =
             new ThreadPoolExecutor(0, 1, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setDaemon(true)
@@ -129,7 +132,7 @@ public class ConfigHelper {
                 }
             }
         } catch (IOException e) {
-            log.error("cannot find {0} under classpath {}",resource, e);
+            log.error("cannot find {} under classpath {}",resource, e);
         }
         return null;
     }
@@ -157,11 +160,11 @@ public class ConfigHelper {
             String path = scanResource(i);
             if (path != null) {
                 try {
-                    log.info("load applicationConfig from {0}" , path);
+                    log.info("load applicationConfig from {}" , path);
                     fileConfig.copyOf(Files.readAllBytes(Paths.get(path)));
                     break;
                 } catch (IOException e) {
-                    log.error("cannot load from {0} {1}", path, e);
+                    log.error("cannot load from {} {}", path, e);
                 }
             }
         }
@@ -223,10 +226,10 @@ public class ConfigHelper {
                 info.setPort(s);
             }
         }
-        log.info("process.name = {0}", info.getName());
-        log.info("process.profile = {0}", info.getProfile());
-        log.info("process.ip = {0}", info.getIp());
-        log.info("process.port = {0}", info.getPort());
+        log.info("process.name = {}", info.getName());
+        log.info("process.profile = {}", info.getProfile());
+        log.info("process.ip = {}", info.getIp());
+        log.info("process.port = {}", info.getPort());
         return info;
     }
 
@@ -237,7 +240,7 @@ public class ConfigHelper {
     public static CuratorFramework newClient(String connectString,
                                              String scheme,
                                              String password) throws InterruptedException {
-        log.info("zookeeper.servers={0}", connectString);
+        log.info("zookeeper.servers={}", connectString);
         RetryPolicy policy = new BoundedExponentialBackoffRetry(1000, 60000, 25);
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
         builder.connectString(connectString).connectionTimeoutMs(8000).sessionTimeoutMs(60000).retryPolicy(policy);

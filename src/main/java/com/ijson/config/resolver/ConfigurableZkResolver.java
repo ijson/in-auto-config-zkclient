@@ -7,7 +7,8 @@ import com.google.common.collect.Lists;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.Config;
 import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.helper.ILogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import static com.ijson.config.base.ConfigConstants.ConfKeys.*;
 public class ConfigurableZkResolver implements IZkResolver {
 
 
-    private static ILogger log = ILogger.getLogger(ConfigurableZkResolver.class);
+    public static final Logger log = LoggerFactory.getLogger(ConfigurableZkResolver.class);
 
     private boolean enable = false;
     private String servers;
@@ -44,7 +45,7 @@ public class ConfigurableZkResolver implements IZkResolver {
             try {
                 out.write(app.getContent());
             } catch (IOException e) {
-                log.error("cannot clone from appConfig {0}", e);
+                log.error("cannot clone from appConfig {}", e);
             }
 
             // 从本地配置 autoconf/cms-zookeeper中加载配置
@@ -78,7 +79,7 @@ public class ConfigurableZkResolver implements IZkResolver {
             try {
                 append(out, System.getProperty(i));
             } catch (IOException e) {
-                log.error("cannot append {0}  {1}", i, e);
+                log.error("cannot append {}  {}", i, e);
             }
         }
     }
@@ -90,7 +91,7 @@ public class ConfigurableZkResolver implements IZkResolver {
             try {
                 Files.copy(cmsConfig, out);
             } catch (IOException e) {
-                log.error("cannot load from {0}  {1}", cmsConfig, e);
+                log.error("cannot load from {}  {}", cmsConfig, e);
             }
         }
     }

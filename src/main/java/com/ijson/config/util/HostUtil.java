@@ -1,11 +1,13 @@
 package com.ijson.config.util;
 
-import com.ijson.config.helper.ILogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static com.ijson.config.base.ConfigConstants.*;
+import static com.ijson.config.base.ConfigConstants.computer_name;
+import static com.ijson.config.base.ConfigConstants.unknown_host;
 
 /**
  * Created by cuiyongxu on 17/8/27.
@@ -13,7 +15,7 @@ import static com.ijson.config.base.ConfigConstants.*;
 public class HostUtil {
 
 
-    private static ILogger log = ILogger.getLogger(HostUtil.class);
+    public static final Logger log = LoggerFactory.getLogger(HostUtil.class);
 
     public static String getHostName() {
         if (System.getenv(computer_name) != null) {
@@ -53,7 +55,7 @@ public class HostUtil {
         try {
             return InetAddress.getByName(ip).isSiteLocalAddress();
         } catch (UnknownHostException e) {
-            log.error("cannot parse {0}  {1}",  ip, e);
+            log.error("cannot parse {}  {}", ip, e);
             return false;
         }
     }

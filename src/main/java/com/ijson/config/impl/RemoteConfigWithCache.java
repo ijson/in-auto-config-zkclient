@@ -4,8 +4,9 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.Files;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.ijson.config.helper.ILogger;
 import com.ijson.config.watcher.FileUpdateWatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class RemoteConfigWithCache extends RemoteConfig {
 
 
-    private static ILogger log = ILogger.getLogger(RemoteConfigWithCache.class);
+    public static final Logger log = LoggerFactory.getLogger(RemoteConfigWithCache.class);
+
     private static final ThreadFactory FACTORY =
             new ThreadFactoryBuilder().setDaemon(true).setNameFormat("config-load-%d").build();
     private final File cacheFile;
@@ -46,7 +48,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
                     initZookeeper();
                 }).start();
             } catch (IOException e) {
-                log.error("cannot read {0}", cacheFile);
+                log.error("cannot read {}", cacheFile);
                 initZookeeper();
             }
         } else {
@@ -55,7 +57,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
         }
         //注册本地配置变更通知回调
         FileUpdateWatcher.getInstance().watch(cacheFile.toPath(), (path, content) -> {
-            log.info("local change: {0}", path);
+            log.info("local change: {}", path);
             refresh(content);
         });
     }
@@ -68,7 +70,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
                 FileUpdateWatcher.getInstance().mask(cacheFile.toPath());
                 Files.write(content, cacheFile);
             } catch (IOException e) {
-                log.error("cannot write {0}", cacheFile);
+                log.error("cannot write {}", cacheFile);
             }
             notifyListeners();
         }
@@ -78,7 +80,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
     protected void reload(byte[] content) {
         //避免首次启动,远程配置不存在反而覆盖了本地配置
         if ((content == null || content.length == 0) && !loadedFromZookeeper) {
-            log.warn("{0} deleted, wont clean local for safety", getPath());
+            log.warn("{} deleted, wont clean local for safety", getPath());
             return;
         }
         loadedFromZookeeper = true;

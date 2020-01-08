@@ -1,6 +1,9 @@
 package com.ijson.config.helper;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.management.AttributeNotFoundException;
 import javax.management.ObjectName;
 import java.util.Collection;
@@ -15,7 +18,7 @@ import static java.lang.Thread.sleep;
 
 public class WebServer {
 
-    private static ILogger log = ILogger.getLogger(WebServer.class);
+    public static final Logger log = LoggerFactory.getLogger(WebServer.class);
 
     public static boolean isTomcat() {
         return JmxHelper.mbeanExists(catalina_type_server);
@@ -50,7 +53,7 @@ public class WebServer {
             try {
                 String protocol = JmxHelper.queryString(connector, "protocol");
                 Integer port = JmxHelper.queryInt(connector, "port");
-                log.info("tomcat, protocol={0}, port={1}", protocol, port);
+                log.info("tomcat, protocol={}, port={}", protocol, port);
                 if (protocol != null && protocol.toLowerCase().contains("http")) {
                     if (port == null) {
                         continue;
@@ -90,7 +93,7 @@ public class WebServer {
             }
             String protocol = JmxHelper.queryString(selector, "ProtocolName");
             String address = JmxHelper.queryString(selector, "Address");
-            log.info("resin, protocol={0} address={1} port={2}", protocol, address, port);
+            log.info("resin, protocol={} address={} port={}", protocol, address, port);
             if (protocol == null || !"http".equalsIgnoreCase(protocol.trim())) {
                 highestOther = max(highestOther, port);
             } else {
@@ -168,7 +171,7 @@ public class WebServer {
             selectors = JmxHelper.queryNames(name);
             if (selectors.isEmpty()) {
                 sleep(1000L);
-                log.info("query({0}), try {1} times, waiting {2} seconds {3}", name, tries, tries);
+                log.info("query({}), try {} times, waiting {} seconds {}", name, tries, tries);
             } else {
                 return selectors;
             }

@@ -2,14 +2,15 @@ package com.ijson.config.impl;
 
 import com.google.common.io.Files;
 import com.ijson.config.base.ChangeableConfig;
-import com.ijson.config.helper.ILogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 public class LocalConfig extends ChangeableConfig {
 
-    private static ILogger log = ILogger.getLogger(LocalConfig.class);
+    public static final Logger log = LoggerFactory.getLogger(LocalConfig.class);
     private final Path path;
 
     public LocalConfig(String name, Path path) {
@@ -21,7 +22,7 @@ public class LocalConfig extends ChangeableConfig {
             }
         } catch (IOException e) {
             copyOf(new byte[0]);
-            log.error("configName={0}, path={1}  exception: {2}", name, path, e);
+            log.error("configName={}, path={}  exception: {}", name, path, e);
         }
     }
 

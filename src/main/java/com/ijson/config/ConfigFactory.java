@@ -7,9 +7,10 @@ import com.ijson.config.api.IConfigFactory;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.ProcessInfo;
 import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.helper.ILogger;
-import com.ijson.config.util.ZookeeperUtil;
 import com.ijson.config.resolver.ConfigZkResolver;
+import com.ijson.config.util.ZookeeperUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
@@ -18,7 +19,7 @@ import java.nio.file.Path;
  */
 public class ConfigFactory {
 
-    private static ILogger log = ILogger.getLogger(ConfigFactory.class);
+    public static final Logger log = LoggerFactory.getLogger(ConfigFactory.class);
 
 
     private ConfigFactory() {

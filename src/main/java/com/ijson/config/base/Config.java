@@ -4,8 +4,8 @@ package com.ijson.config.base;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.helper.ILogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -15,8 +15,7 @@ import static com.ijson.config.base.ConfigConstants.UTF8;
 
 public class Config extends Properties {
 
-    private static ILogger log = ILogger.getLogger(ConfigHelper.class);
-
+    public static final Logger log = LoggerFactory.getLogger(Config.class);
 
     private boolean parsed = false;
     private byte[] content;
@@ -93,7 +92,7 @@ public class Config extends Properties {
                             try {
                                 m.put(k, unEscapeJava(i.substring(next).trim()));
                             } catch (Exception e) {
-                                log.error("cannot escape:{0}, content={1}", i, content);
+                                log.error("cannot escape:{}, content={}", i, content);
                             }
                         } else {
                             m.put(k, "");

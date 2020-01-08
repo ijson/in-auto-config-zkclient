@@ -3,17 +3,17 @@ package com.ijson.config;
 import com.ijson.config.api.IChangeableConfig;
 import com.ijson.config.base.AbstractConfigFactory;
 import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.helper.ILogger;
 import com.ijson.config.impl.LocalConfig;
 import com.ijson.config.watcher.FileUpdateWatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
 public class LocalConfigFactory extends AbstractConfigFactory {
 
 
-    private static ILogger log = ILogger.getLogger(LocalConfigFactory.class);
-
+    public static final Logger log = LoggerFactory.getLogger(LocalConfigFactory.class);
     private final Path path;
 
     public LocalConfigFactory(Path localConfigPath) {
@@ -45,7 +45,7 @@ public class LocalConfigFactory extends AbstractConfigFactory {
         final LocalConfig c = new LocalConfig(name, p);
         FileUpdateWatcher.getInstance().watch(p, (path1, content) -> {
             if (c.isChanged(content)) {
-                log.info("{0} changed", path1);
+                log.info("{} changed", path1);
                 c.copyOf(content);
                 c.notifyListeners();
             }
