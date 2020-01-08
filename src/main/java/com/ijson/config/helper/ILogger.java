@@ -10,6 +10,15 @@ public class ILogger {
 
     private Logger log;
 
+    public static ILogger instance = doCreate();
+
+    private ILogger(){}
+
+    private static ILogger doCreate() {
+        return null;
+    }
+
+
     public static ILogger getLogger(Class clazz) {
         ILogger iLogger = new ILogger();
         iLogger.setLog(Logger.getLogger(clazz.getSimpleName()));
