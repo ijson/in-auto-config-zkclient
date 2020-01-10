@@ -5,13 +5,21 @@ import com.ijson.config.api.IChangeListener;
 import com.ijson.config.api.IChangeableConfig;
 import com.ijson.config.api.IConfigFactory;
 import com.ijson.config.api.IZkResolver;
+import com.ijson.config.base.AbstractConfigFactory;
 import com.ijson.config.base.ProcessInfo;
 import com.ijson.config.helper.ConfigHelper;
+import com.ijson.config.impl.LocalConfig;
+import com.ijson.config.impl.RemoteConfig;
+import com.ijson.config.impl.RemoteConfigWithCache;
 import com.ijson.config.resolver.ConfigZkResolver;
 import com.ijson.config.util.ZookeeperUtil;
+import com.ijson.config.watcher.FileUpdateWatcher;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.utils.ZKPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -91,4 +99,119 @@ public class ConfigFactory {
             }
         }
     }
+
+    private static class RemoteConfigWithCacheFactory extends RemoteConfigFactory {
+        private final Path path;
+
+        RemoteConfigWithCacheFactory(Path localConfigPath, ProcessInfo info) {
+            super(info);
+            this.path = localConfigPath;
+        }
+
+        /**
+         * 本地cache根路径
+         *
+         * @return 路径
+         */
+        public Path getPath() {
+            return path;
+        }
+
+        /**
+         * 创建LocalConfig并增加更新回调功能
+         *
+         * @param name 配置名
+         * @return 配置
+         */
+        @Override
+        protected IChangeableConfig doCreate(String name) {
+            ProcessInfo info = getInfo();
+            String path = ZKPaths.makePath(info.getPath(), name);
+            File cacheFile = this.path.resolve(name).toFile();
+            RemoteConfigWithCache c = new RemoteConfigWithCache(name, path, info.orderedPath(), cacheFile);
+            c.loadAndWatchChanges();
+            return c;
+        }
+    }
+
+    private static class RemoteConfigFactory extends AbstractConfigFactory {
+        private final ProcessInfo info;
+
+        RemoteConfigFactory(ProcessInfo info) {
+            this.info = info;
+        }
+
+        /**
+         * @return
+         * @see ZookeeperUtil#getCurator()
+         */
+        @Deprecated
+        public CuratorFramework getClient() {
+            return ZookeeperUtil.getCurator();
+        }
+
+        @Deprecated
+        public void setClient(CuratorFramework client) {
+            ZookeeperUtil.setCurator(client);
+        }
+
+        ProcessInfo getInfo() {
+            return info;
+        }
+
+
+        /**
+         * 创建LocalConfig并增加更新回调功能
+         *
+         * @param name 配置名
+         * @return 配置
+         */
+        @Override
+        protected IChangeableConfig doCreate(String name) {
+            String path = ZKPaths.makePath(info.getPath(), name);
+            RemoteConfig c = new RemoteConfig(name, path, info.orderedPath());
+            c.loadAndWatchChanges();
+            return c;
+        }
+    }
+
+    private static class LocalConfigFactory extends AbstractConfigFactory {
+        private final Path path;
+
+        LocalConfigFactory(Path localConfigPath) {
+            this.path = localConfigPath;
+        }
+
+        /**
+         * 本地cache根路径
+         *
+         * @return 路径
+         */
+        public Path getPath() {
+            return path;
+        }
+
+        /**
+         * 创建LocalConfig并增加更新回调功能
+         *
+         * @param name 配置名
+         * @return 配置
+         */
+        @Override
+        protected IChangeableConfig doCreate(String name) {
+            Path p = path.resolve(name);
+            final LocalConfig c = new LocalConfig(name, p);
+            FileUpdateWatcher.getInstance().watch(p, (path1, content) -> {
+                if (c.isChanged(content)) {
+                    log.info("{} changed", path1);
+                    c.copyOf(content);
+                    c.notifyListeners();
+                }
+            });
+            return c;
+        }
+    }
+
 }
+
+

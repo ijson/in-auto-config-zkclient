@@ -7,9 +7,7 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ijson.config.base.Config;
 import com.ijson.config.base.ConfigConstants;
-import com.ijson.config.base.EventBus;
 import com.ijson.config.base.ProcessInfo;
-import com.ijson.config.util.HostUtil;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -19,7 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,12 +56,35 @@ public class ConfigHelper {
     private static String getServerInnerIP() {
         if (docker.equals(System.getenv(machine_type))) {
             try {
-                return HostUtil.getHostName();
+                return getHostName();
             } catch (Exception e) {
                 return "";
             }
         }
         return null;
+    }
+
+    private static String getHostName() {
+        if (System.getenv(computer_name) != null) {
+            return System.getenv(computer_name);
+        } else {
+            return getHostNameForLinux();
+        }
+    }
+
+    private static String getHostNameForLinux() {
+        try {
+            return (InetAddress.getLocalHost()).getHostName();
+        } catch (UnknownHostException uhe) {
+            String host = uhe.getMessage(); // host = "hostname: hostname"
+            if (host != null) {
+                int colon = host.indexOf(':');
+                if (colon > 0) {
+                    return host.substring(0, colon);
+                }
+            }
+            return unknown_host;
+        }
     }
 
     public static ProcessInfo getProcessInfo() {
