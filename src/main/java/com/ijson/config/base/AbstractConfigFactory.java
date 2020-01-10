@@ -1,16 +1,19 @@
 package com.ijson.config.base;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ijson.config.api.IChangeListener;
 import com.ijson.config.api.IChangeableConfig;
 import com.ijson.config.api.IConfigFactory;
-import com.ijson.config.impl.MergedConfig;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
@@ -69,5 +72,42 @@ public abstract class AbstractConfigFactory implements IConfigFactory {
     @Override
     public List<IChangeableConfig> getAllConfig() {
         return ImmutableList.copyOf(m.values());
+    }
+
+
+    private static class MergedConfig extends ChangeableConfig implements IChangeableConfig {
+        private final List<IChangeableConfig> configs;
+
+        MergedConfig(List<IChangeableConfig> configs) {
+            super(Joiner.on(',').join(Collections2.transform(configs, IChangeableConfig::getName)));
+
+            IChangeListener listener = config -> merge();
+
+            // 注册单个配置文件的更新回调功能
+            for (IChangeableConfig c : configs) {
+                c.addListener(listener, false);
+            }
+
+            // 同名配置，排在前面的优先，所以按照做一次排序反转
+            this.configs = Lists.newArrayList(configs);
+            Collections.reverse(this.configs);
+
+            // 首次merge配置
+            merge();
+        }
+
+        private void merge() {
+            Map<String, String> m = Maps.newHashMap();
+            for (IChangeableConfig c : this.configs) {
+                m.putAll(c.getAll());
+            }
+            copyOf(m);
+            notifyListeners();
+        }
+
+        @Override
+        public String toString() {
+            return "MergedConfig{" + "name=" + getName() + '}';
+        }
     }
 }

@@ -5,7 +5,7 @@ import com.ijson.config.api.IChangeListener;
 import com.ijson.config.api.IChangeable;
 import com.ijson.config.api.IChangeableConfig;
 import com.ijson.config.api.IConfig;
-import com.ijson.config.util.ZookeeperUtil;
+import com.ijson.config.helper.ZookeeperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public class ChangeableConfig extends Config implements IChangeableConfig {
             return true;
         }
         byte[] old = getContent();
-        log.debug("change detecting before: {} after:{}", ZookeeperUtil.newString(old), ZookeeperUtil.newString(now));
+        log.debug("change detecting before: {} after:{}", ZookeeperHelper.newString(old), ZookeeperHelper.newString(now));
         return !Arrays.equals(now, old);
     }
 

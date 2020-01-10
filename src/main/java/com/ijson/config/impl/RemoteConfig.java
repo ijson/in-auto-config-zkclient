@@ -2,7 +2,7 @@ package com.ijson.config.impl;
 
 import com.google.common.base.MoreObjects;
 import com.ijson.config.base.ChangeableConfig;
-import com.ijson.config.util.ZookeeperUtil;
+import com.ijson.config.helper.ZookeeperHelper;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.utils.ZKPaths;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.ijson.config.util.ZookeeperUtil.getCurator;
+import static com.ijson.config.helper.ZookeeperHelper.getCurator;
 
 public class RemoteConfig extends ChangeableConfig {
 
@@ -82,7 +82,7 @@ public class RemoteConfig extends ChangeableConfig {
                 log.info("try connect zookeeper, name: {}", getName());
                 getCurator().blockUntilConnected();
             }
-            if (ZookeeperUtil.exists(getCurator(), path, baseWatcher) != null) {
+            if (ZookeeperHelper.exists(getCurator(), path, baseWatcher) != null) {
                 loadFromZookeeper();
             }
         } catch (InterruptedException e) {
@@ -96,7 +96,7 @@ public class RemoteConfig extends ChangeableConfig {
 
     protected void loadFromZookeeper() {
         log.info("{}, path:{}, order:{}", getName(), path, paths);
-        List<String> children = ZookeeperUtil.getChildren(getCurator(), path, baseWatcher);
+        List<String> children = ZookeeperHelper.getChildren(getCurator(), path, baseWatcher);
         boolean found = false;
         //按照特定顺序逐个查找配置
         if (children != null && !children.isEmpty()) {
@@ -109,7 +109,7 @@ public class RemoteConfig extends ChangeableConfig {
                 setProfile(i);
                 String p = ZKPaths.makePath(path, i);
                 try {
-                    byte[] content = ZookeeperUtil.getData(getCurator(), p, leafWatcher);
+                    byte[] content = ZookeeperHelper.getData(getCurator(), p, leafWatcher);
                     if (content != null && content.length > 0) {
                         log.info("{}, load from path:{}", getName(), p);
                         reload(content);
@@ -120,15 +120,15 @@ public class RemoteConfig extends ChangeableConfig {
                     log.error("cannot load {} from zookeeper, path{}  {}", getName(), path, e);
                 }
             }
-        } else if (ZookeeperUtil.exists(getCurator(), path) != null) {
-            byte[] content = ZookeeperUtil.getData(getCurator(), path, baseWatcher);
+        } else if (ZookeeperHelper.exists(getCurator(), path) != null) {
+            byte[] content = ZookeeperHelper.getData(getCurator(), path, baseWatcher);
             if (content != null && content.length > 0) {
                 reload(content);
                 found = true;
             }
         }
         if (!found) {
-            ZookeeperUtil.exists(getCurator(), path, baseWatcher);
+            ZookeeperHelper.exists(getCurator(), path, baseWatcher);
             log.warn("cannot find {} in zookeeper, path: {}", getName(), path);
             reload(new byte[0]);
         }

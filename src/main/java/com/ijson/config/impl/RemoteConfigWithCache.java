@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.Files;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.ijson.config.watcher.FileUpdateWatcher;
+import com.ijson.config.helper.FileUpdateWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

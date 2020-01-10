@@ -1,6 +1,5 @@
-package com.ijson.config.util;
+package com.ijson.config.helper;
 
-import com.ijson.config.exception.ZookeeperException;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -16,15 +15,15 @@ import static com.ijson.config.base.ConfigConstants.UTF8;
 /**
  * zookeeper工具类
  */
-public class ZookeeperUtil {
+public class ZookeeperHelper {
 
     private static CuratorFramework curator = null;
 
-    private ZookeeperUtil() {
+    private ZookeeperHelper() {
     }
 
     public static void setCurator(CuratorFramework curator) {
-        ZookeeperUtil.curator = curator;
+        ZookeeperHelper.curator = curator;
     }
 
     public static CuratorFramework getCurator() {
@@ -209,4 +208,11 @@ public class ZookeeperUtil {
             throw new ZookeeperException("setACL(" + path + ")", e);
         }
     }
+
+    private static class ZookeeperException extends RuntimeException {
+        ZookeeperException(String s, Exception e) {
+            super("访问Zookeeper异常", e);
+        }
+    }
+
 }

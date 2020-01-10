@@ -1,4 +1,4 @@
-package com.ijson.config.watcher;
+package com.ijson.config.helper;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;

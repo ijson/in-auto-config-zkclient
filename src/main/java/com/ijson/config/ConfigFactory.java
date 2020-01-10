@@ -1,25 +1,27 @@
 package com.ijson.config;
 
 import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import com.ijson.config.api.IChangeListener;
 import com.ijson.config.api.IChangeableConfig;
 import com.ijson.config.api.IConfigFactory;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.AbstractConfigFactory;
+import com.ijson.config.base.ChangeableConfig;
 import com.ijson.config.base.ProcessInfo;
 import com.ijson.config.helper.ConfigHelper;
-import com.ijson.config.impl.LocalConfig;
+import com.ijson.config.helper.ConfigZkResolver;
 import com.ijson.config.impl.RemoteConfig;
 import com.ijson.config.impl.RemoteConfigWithCache;
-import com.ijson.config.resolver.ConfigZkResolver;
-import com.ijson.config.util.ZookeeperUtil;
-import com.ijson.config.watcher.FileUpdateWatcher;
+import com.ijson.config.helper.ZookeeperHelper;
+import com.ijson.config.helper.FileUpdateWatcher;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.utils.ZKPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -69,7 +71,7 @@ public class ConfigFactory {
                 ProcessInfo processInfo = ConfigHelper.getProcessInfo();
                 if (resolver.isEnable() && !Strings.isNullOrEmpty(resolver.getServer())) {
                     processInfo.setPath(resolver.getBasePath());
-                    ZookeeperUtil.setCurator(
+                    ZookeeperHelper.setCurator(
                             ConfigHelper.newClient(resolver.getServer(), resolver.getAuthType(), resolver.getAuth()));
 
                     // 找不到配置的本地路径,则只用远程zookeeper配置
@@ -143,16 +145,16 @@ public class ConfigFactory {
 
         /**
          * @return
-         * @see ZookeeperUtil#getCurator()
+         * @see ZookeeperHelper#getCurator()
          */
         @Deprecated
         public CuratorFramework getClient() {
-            return ZookeeperUtil.getCurator();
+            return ZookeeperHelper.getCurator();
         }
 
         @Deprecated
         public void setClient(CuratorFramework client) {
-            ZookeeperUtil.setCurator(client);
+            ZookeeperHelper.setCurator(client);
         }
 
         ProcessInfo getInfo() {
@@ -211,6 +213,35 @@ public class ConfigFactory {
             return c;
         }
     }
+
+
+    private static class LocalConfig extends ChangeableConfig {
+
+        private final Path path;
+
+        LocalConfig(String name, Path path) {
+            super(name);
+            this.path = path;
+            try {
+                if (path.toFile().exists()) {
+                    copyOf(Files.toByteArray(path.toFile()));
+                }
+            } catch (IOException e) {
+                copyOf(new byte[0]);
+                log.error("configName={}, path={}  exception: {}", name, path, e);
+            }
+        }
+
+        public Path getPath() {
+            return path;
+        }
+
+        @Override
+        public String toString() {
+            return "LocalConfig{" + "name=" + getName() + ", path=" + path + '}';
+        }
+    }
+
 
 }
 
