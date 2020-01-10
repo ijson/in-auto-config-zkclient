@@ -29,13 +29,13 @@ import java.nio.file.Path;
  */
 public class ConfigFactory {
 
-    public static final Logger log = LoggerFactory.getLogger(ConfigFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigFactory.class);
 
 
     private ConfigFactory() {
     }
 
-    public static IConfigFactory getInstance() {
+    private static IConfigFactory getInstance() {
         return LazyHolder.instance;
     }
 
@@ -49,10 +49,6 @@ public class ConfigFactory {
 
     public static IChangeableConfig getConfig(String name, IChangeListener listener, boolean loadAfterRegister) {
         return getInstance().getConfig(name, listener, loadAfterRegister);
-    }
-
-    public static boolean hasConfig(String name) {
-        return getInstance().hasConfig(name);
     }
 
 
@@ -89,10 +85,10 @@ public class ConfigFactory {
         }
 
         private static IZkResolver getZkResolver() {
-            String key = "zookeeperResolver";
+            String key = "zkResolver";
             String cls = ConfigHelper.getApplicationConfig().get(key);
             if (Strings.isNullOrEmpty(cls)) {
-                cls = System.getProperty(key, "com.ijson.resolver.ConfigZkResolver");
+                cls = System.getProperty(key, "com.ijson.config.helper.ConfigZkResolver");
             }
             try {
                 return (IZkResolver) Class.forName(cls).newInstance();
