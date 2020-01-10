@@ -10,8 +10,6 @@
 
 ##### 本地文件读取使用指南
 
-1. 使用本地文件读取,需要在VMOption中添加:`-Dconfig.enableZookeeper=false` 即可
-
 
 #### 引用方式
 
@@ -19,7 +17,7 @@
 <dependency>
   <groupId>com.ijson.common</groupId>
   <artifactId>in-auto-config-zkclient</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
@@ -30,10 +28,10 @@
 
    | 配置|默认值|描述 |
    |---|---|---|
-   | config.enableZookeeper |true|不访问远程zookeeper服务器,可忽略|
-   |zookeeper.authentication| in\:ijson|用 username\:password 字符串来产生一个MD5串|
-   |zookeeper.authenticationType|digest|认证类型|
-   |zookeeper.basePath|in/config|存储位置|
+   |zk.enable |false|访问远程zookeeper服务器,可忽略|
+   |zk.auth| in\:ijson|用 username\:password 字符串来产生一个MD5串|
+   |zk.authType|digest|认证类型|
+   |zk.basePath|in/config|存储位置|
    |config.url|http://config.ijson.com/in/config/api|zookeeper配置获取地址,可自行编写①|
    |process.profile|config.url中的profile,区分环境||
    |process.name|用于区分产品线||
@@ -44,10 +42,10 @@
 ### 附录
 ① 格式结构
 
-http://config.ijson.com/in/config/api?profile=develop&name=cms-zookeeper
+http://config.ijson.com/in/config/api?profile=develop&name=demo
 ```
 zookeeper.servers=115.29.102.69:2181 zookeeper.authenticationType=digest zookeeper.authentication=in:ijson zookeeper.basePath=/in/config
 ```
 
 
--Dprocess.profile=ceshi113 -Dzookeeper.servers=http://localhost:8080/in/config/api -Dprocess.name=cms-zookeeper -Dconfig.enableZookeeper=true
+-Dprocess.profile=ceshi -Dzookeeper.servers=http://localhost:8080/in/config/api -Dprocess.name=demo -zk.enable=true
