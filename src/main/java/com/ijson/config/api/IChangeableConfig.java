@@ -9,6 +9,7 @@ public interface IChangeableConfig extends IConfig, IChangeable {
      *
      * @return 配置文件名
      */
+    @Override
     String getName();
 
     /**

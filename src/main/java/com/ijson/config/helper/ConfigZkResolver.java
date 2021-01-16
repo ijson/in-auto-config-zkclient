@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.Config;
+import com.ijson.config.base.ConfigConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.ijson.config.base.ConfigConstants.ConfKeys.*;
-import static com.ijson.config.base.ConfigConstants.Ijson.configUrl;
+import static com.ijson.config.base.ConfigConstants.Ijson.CONFIG_URL;
 import static com.ijson.config.base.ConfigConstants.*;
 
 
@@ -28,24 +29,25 @@ public class ConfigZkResolver extends ConfigurableZkResolver {
 
     public static final Logger log = LoggerFactory.getLogger(ConfigZkResolver.class);
 
+    @Override
     protected void customSettings(ByteArrayOutputStream out) {
         Config appConfig = ConfigHelper.getApplicationConfig();
-        String configURL = appConfig.get(config_url);
+        String CONFIG_URL = appConfig.get(Ijson.CONFIG_URL);
 
-        if (Strings.isNullOrEmpty(configURL)) {
-            configURL = System.getProperty(config_url);
+        if (Strings.isNullOrEmpty(CONFIG_URL)) {
+            CONFIG_URL = System.getProperty(Ijson.CONFIG_URL);
         }
-        if (Strings.isNullOrEmpty(configURL)) {
-            configURL = configUrl;
+        if (Strings.isNullOrEmpty(CONFIG_URL)) {
+            CONFIG_URL = Ijson.CONFIG_URL;
         }
-        String name = appConfig.get(process_name);
+        String name = appConfig.get(PROCESS_PROFILE);
         if (!Strings.isNullOrEmpty(appConfig.get("custom.zk.server.url"))) {
-            configURL = appConfig.get("custom.zk.server.url");
+            CONFIG_URL = appConfig.get("custom.zk.server.url");
         }
         if (Strings.isNullOrEmpty(name)) {
-            name = in_zookeeper;
+            name = IN_ZOOKEEPER;
         }
-        String s = configURL + "?profile=" + appConfig.get(process_profile, develop) + "&name=" + name;
+        String s = CONFIG_URL + "?profile=" + appConfig.get(PROCESS_PROFILE, DEVELOP) + "&name=" + name;
         fetchContent(s, out);
     }
 
@@ -100,15 +102,16 @@ class ConfigurableZkResolver implements IZkResolver {
      * <li>从环境变量加载</li>
      * </ul>
      */
+    @Override
     public void resolve() {
         Config app = ConfigHelper.getApplicationConfig();
-        if (app.getBool(config_enable_zookeeper, false)) {
+        if (app.getBool(CONFIG_ENABLE_ZOOKEEPER, false)) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             // 复制本地配置
             try {
                 out.write(app.getContent());
             } catch (IOException e) {
-                log.error("cannot clone from appConfig {}", e);
+                log.error("cannot clone from appConfig ", e);
             }
 
             // 从本地配置 autoconf/cms-zookeeper中加载配置
@@ -122,14 +125,14 @@ class ConfigurableZkResolver implements IZkResolver {
 
             Config config = new Config();
             config.copyOf(out.toByteArray());
-            servers = config.get(zookeeper_servers);
+            servers = config.get(ZOOKEEPER_SERVERS);
             if (Strings.isNullOrEmpty(servers)) {
                 enable = false;
                 return;
             }
-            auth = config.get(zookeeper_authentication);
-            authType = config.get(zookeeper_authentication_type);
-            basePath = config.get(zookeeper_base_path, "/in/config");
+            auth = config.get(ZOOKEEPER_AUTHENTICATION);
+            authType = config.get(ZOOKEEPER_AUTHENTICATION_TYPE);
+            basePath = config.get(ZOOKEEPER_BASE_PATH, "/in/config");
         }
 
 
@@ -137,7 +140,7 @@ class ConfigurableZkResolver implements IZkResolver {
 
     private void appendEnvironments(ByteArrayOutputStream out) {
         List<String> keys =
-                Lists.newArrayList(config_enable_zookeeper, zookeeper_servers, zookeeper_authentication, zookeeper_authentication_type, zookeeper_base_path);
+                Lists.newArrayList(CONFIG_ENABLE_ZOOKEEPER, ZOOKEEPER_SERVERS, ZOOKEEPER_AUTHENTICATION, ZOOKEEPER_AUTHENTICATION_TYPE, ZOOKEEPER_BASE_PATH);
         for (String i : keys) {
             try {
                 append(out, System.getProperty(i));
@@ -148,7 +151,7 @@ class ConfigurableZkResolver implements IZkResolver {
     }
 
     private void appendAutoConfig(ByteArrayOutputStream out) {
-        Path cmsConfig = ConfigHelper.getConfigPath().resolve(in_zookeeper);
+        Path cmsConfig = ConfigHelper.getConfigPath().resolve(IN_ZOOKEEPER);
         if (cmsConfig.toFile().exists()) {
             out.write('\n');
             try {

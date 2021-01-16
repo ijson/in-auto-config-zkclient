@@ -18,13 +18,14 @@ public class ChangeableConfig extends Config implements IChangeableConfig {
 
     private final String name;
     private final IChangeable eventBus;
-    private String profile = ConfigConstants.profile;
+    private String profile = ConfigConstants.PROFILE;
 
     public ChangeableConfig(String name) {
         this.name = name;
         this.eventBus = new EventBus(this);
     }
 
+    @Override
     public String getProfile() {
         return profile;
     }
@@ -38,18 +39,22 @@ public class ChangeableConfig extends Config implements IChangeableConfig {
         return name;
     }
 
+    @Override
     public void addListener(IChangeListener listener) {
         eventBus.addListener(listener);
     }
 
+    @Override
     public void addListener(IChangeListener listener, boolean loadAfterRegister) {
         eventBus.addListener(listener, loadAfterRegister);
     }
 
+    @Override
     public void removeListener(IChangeListener listener) {
         eventBus.removeListener(listener);
     }
 
+    @Override
     public void notifyListeners() {
         eventBus.notifyListeners();
     }
@@ -80,10 +85,12 @@ public class ChangeableConfig extends Config implements IChangeableConfig {
             this.config = config;
         }
 
+        @Override
         public void addListener(IChangeListener listener) {
             addListener(listener, true);
         }
 
+        @Override
         public void addListener(IChangeListener listener, boolean loadAfterRegister) {
             if (listener != null && !listeners.contains(listener)) {
                 listeners.add(listener);
@@ -97,12 +104,14 @@ public class ChangeableConfig extends Config implements IChangeableConfig {
             }
         }
 
+        @Override
         public void removeListener(IChangeListener listener) {
             if (listener != null) {
                 listeners.remove(listener);
             }
         }
 
+        @Override
         public void notifyListeners() {
             for (IChangeListener i : listeners) {
                 log.info("{} changed, notify {}", config.getName(), i);

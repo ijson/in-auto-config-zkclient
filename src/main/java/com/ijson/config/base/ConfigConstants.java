@@ -3,6 +3,7 @@ package com.ijson.config.base;
 import com.google.common.collect.Lists;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -10,55 +11,49 @@ import java.util.List;
  */
 public interface ConfigConstants {
 
-    String profile = "local";
-    Charset UTF8 = Charset.forName("UTF-8");
-    Charset GBK = Charset.forName("GBK");
+    String PROFILE = "local";
+    Charset UTF8 = StandardCharsets.UTF_8;
 
-    String configFiles = "autoconf,log4j.properties,logback.xml,application.properties";
-    String autoconf = "autoconf";
-    String tmpdir = "java.io.tmpdir";
-    String configPath = "config.path";
-    String docker = "DOCKER";
-    String machine_type = "MACHINE_TYPE";
-    String osName = "os.name";
-    String windows = "windows";
-    String fileStartWith = "file:/";
-    String process_profile = "process.profile";
-    String process_name = "process.profile";
-    String unknown = "unknown";
-    String spring_profiles_active = "spring.profiles.active";
-    String develop = "develop";
-    String application_suffix = "application-";
-    String before_properties = ".properties";
-    String cluster_ip = "CLUSTER_IP";
-    String tomcat_port = "TOMCAT_PORT";
-    String process_ip = "process.ip";
-    String process_port = "process.port";
-    String computer_name = "COMPUTERNAME";
-    String unknown_host = "UnknownHost";
-    String object_name_base = "com.javamonitor:type=";
-    List<String> applicationFiles = Lists.newArrayList("application-default.properties", "application.properties");
+    String CONFIG_FILES = "autoconf,log4j.properties,logback.xml,application.properties";
+    String AUTO_CONF = "autoconf";
+    String TMP_DIR = "java.io.tmpdir";
+    String CONFIG_PATH = "config.path";
+    String DOCKER = "DOCKER";
+    String MACHINE_TYPE = "MACHINE_TYPE";
+    String OS_NAME = "os.name";
+    String WINDOWS = "windows";
+    String FILE_START_WITH = "file:/";
+    String PROCESS_PROFILE = "process.profile";
+    String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
+    String DEVELOP = "develop";
+    String APPLICATION_SUFFIX = "application-";
+    String BEFORE_PROPERTIES = ".properties";
+    String PROCESS_IP = "process.ip";
+    String PROCESS_PORT = "process.port";
+    String COMPUTER_NAME = "COMPUTERNAME";
+    String UNKNOWN_HOST = "UnknownHost";
+    List<String> APPLICATION_FILES = Lists.newArrayList("application-default.properties", "application.properties");
 
     interface ConfKeys {
-        String config_enable_zookeeper = "zk.enable";
-        String zookeeper_servers = "zk.servers";
-        String zookeeper_authentication = "zk.auth";
-        String zookeeper_authentication_type = "zk.authType";
-        String zookeeper_base_path = "zk.basePath";
-        String in_zookeeper = "in-zookeeper";
-        String config_url = "config.url";
+        String CONFIG_ENABLE_ZOOKEEPER = "zk.enable";
+        String ZOOKEEPER_SERVERS = "zk.servers";
+        String ZOOKEEPER_AUTHENTICATION = "zk.auth";
+        String ZOOKEEPER_AUTHENTICATION_TYPE = "zk.authType";
+        String ZOOKEEPER_BASE_PATH = "zk.basePath";
+        String IN_ZOOKEEPER = "in-zookeeper";
+        String CONFIG_URL = "config.url";
     }
 
 
     interface Ijson {
-        String configUrl = "http://config.ijson.com/in/config/api";
+        String CONFIG_URL = "http://config.ijson.com/in/config/api";
     }
 
     interface Jmx {
-        String catalina_type_server = "Catalina:type=Server";
-        String jboss_system_type_server = "jboss.system:type=Server";
-        String org_mortbay_jetty_type_server_id = "org.mortbay.jetty:type=server,id=0";
-        String org_mortbay_jetty = "org.mortbay:jetty=default";
-        String resin_type = "resin:type=Resin";
+        String CATALINA_TYPE_SERVER = "Catalina:type=Server";
+        String JBOSS_SYSTEM_TYPE_SERVER = "jboss.system:type=Server";
+        String ORG_MORTBAY_JETTY_TYPE_SERVER_ID = "org.mortbay.jetty:type=server,id=0";
+        String ORG_MORTBAY_JETTY = "org.mortbay:jetty=default";
+        String RESIN_TYPE = "resin:type=Resin";
     }
 }

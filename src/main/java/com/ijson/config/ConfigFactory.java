@@ -8,6 +8,7 @@ import com.ijson.config.api.IConfigFactory;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.AbstractConfigFactory;
 import com.ijson.config.base.ChangeableConfig;
+import com.ijson.config.base.ConfigConstants;
 import com.ijson.config.base.ProcessInfo;
 import com.ijson.config.helper.ConfigHelper;
 import com.ijson.config.helper.ConfigZkResolver;
@@ -36,7 +37,7 @@ public class ConfigFactory {
     }
 
     private static IConfigFactory getInstance() {
-        return LazyHolder.instance;
+        return LazyHolder.INSTANCE;
     }
 
     public static IChangeableConfig getConfig(String name) {
@@ -53,7 +54,7 @@ public class ConfigFactory {
 
 
     private static class LazyHolder {
-        private static final IConfigFactory instance = newFactory();
+        private static final IConfigFactory INSTANCE = newFactory();
 
         private static IConfigFactory newFactory() {
             return doCreate();
@@ -71,7 +72,7 @@ public class ConfigFactory {
                             ConfigHelper.newClient(resolver.getServer(), resolver.getAuthType(), resolver.getAuth()));
 
                     // 找不到配置的本地路径,则只用远程zookeeper配置
-                    if (System.getProperty("java.io.tmpdir").equals(configPath.toString())) {
+                    if (System.getProperty(ConfigConstants.TMP_DIR).equals(configPath.toString())) {
                         return new RemoteConfigFactory(processInfo);
                     }
 

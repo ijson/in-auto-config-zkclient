@@ -41,6 +41,7 @@ public class RemoteConfig extends ChangeableConfig {
         }
     };
     private final Watcher baseWatcher = new Watcher() {
+        @Override
         public void process(WatchedEvent event) {
             Event.EventType t = event.getType();
             String p = event.getPath();

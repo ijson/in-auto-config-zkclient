@@ -22,20 +22,20 @@ public abstract class AbstractConfigFactory implements IConfigFactory {
 
     @Override
     public IChangeableConfig getConfig(String name) {
-        IChangeableConfig c = m.get(name);
-        if (c == null) {
+        IChangeableConfig config = m.get(name);
+        if (config == null) {
             synchronized (this) {
-                c = m.get(name);
-                if (c == null) {
-                    c = newConfig(name);
-                    IChangeableConfig real = m.putIfAbsent(name, c);
+                config = m.get(name);
+                if (config == null) {
+                    config = newConfig(name);
+                    IChangeableConfig real = m.putIfAbsent(name, config);
                     if (real != null) {
-                        c = real;
+                        config = real;
                     }
                 }
             }
         }
-        return c;
+        return config;
     }
 
     @Override

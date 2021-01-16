@@ -12,7 +12,7 @@ import static java.lang.management.ManagementFactory.getPlatformMBeanServer;
 
 public class JmxHelper {
 
-    private static MBeanServer findMBeanServer(final ObjectName objectName) {
+    private static MBeanServer findBeanServer(final ObjectName objectName) {
         final List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(null);
         for (MBeanServer server : servers) {
             try {
@@ -35,10 +35,10 @@ public class JmxHelper {
      * @return <code>true</code> if the bean exists, or <code>false</code>
      * otherwise.
      */
-    public static boolean mbeanExists(final String objectName) {
+    static boolean mbeanExists(final String objectName) {
         try {
             final ObjectName name = new ObjectName(objectName);
-            return findMBeanServer(name).isRegistered(name);
+            return findBeanServer(name).isRegistered(name);
         } catch (Exception e) {
             return false;
         }
@@ -80,7 +80,7 @@ public class JmxHelper {
      * @return The value of the attribute, as string.
      * @throws Exception When there was a problem querying.
      */
-    public static String queryString(final ObjectName objectName, final String attribute) throws Exception {
+    static String queryString(final ObjectName objectName, final String attribute) throws Exception {
         final Object value = query(objectName, attribute);
         return value == null ? null : value.toString();
     }
@@ -109,7 +109,7 @@ public class JmxHelper {
      * @return The value of the attribute, as string.
      * @throws Exception When there was a problem querying.
      */
-    public static Integer queryInt(final ObjectName objectName, final String attribute) throws Exception {
+    static Integer queryInt(final ObjectName objectName, final String attribute) throws Exception {
         final Object value = query(objectName, attribute);
         return value == null ? null : parseInt(value.toString());
     }
@@ -137,7 +137,7 @@ public class JmxHelper {
      * @return The value of the attribute, as string.
      * @throws Exception When there was a problem querying.
      */
-    public static Object query(final String objectName, final String attribute) throws Exception {
+    private static Object query(final String objectName, final String attribute) throws Exception {
         return query(new ObjectName(objectName), attribute);
     }
 
@@ -149,21 +149,20 @@ public class JmxHelper {
      * @return The value of the attribute on the named object.
      * @throws Exception When there was a problem querying.
      */
-    public static Object query(final ObjectName objectName, final String attribute) throws Exception {
+    private static Object query(final ObjectName objectName, final String attribute) throws Exception {
         final int dot = attribute.indexOf('.');
         if (dot < 0) {
-            return findMBeanServer(objectName).getAttribute(objectName, attribute);
+            return findBeanServer(objectName).getAttribute(objectName, attribute);
         }
 
-        return resolveFields((CompositeData) findMBeanServer(objectName).getAttribute(objectName, attribute.substring(0, dot)), attribute
+        return resolveFields((CompositeData) findBeanServer(objectName).getAttribute(objectName, attribute.substring(0, dot)), attribute
                 .substring(dot + 1));
     }
 
     private static Object resolveFields(final CompositeData attribute, final String field) {
         final int dot = field.indexOf('.');
         if (dot < 0) {
-            final Object ret = attribute.get(field);
-            return ret == null ? null : ret;
+            return attribute.get(field);
         }
 
         return resolveFields((CompositeData) attribute.get(field.substring(0, dot)), field.substring(dot + 1));
@@ -176,7 +175,7 @@ public class JmxHelper {
      * @return A list of matching object names.
      * @throws MalformedObjectNameException When the query could not be parsed.
      */
-    public static Set<ObjectName> queryNames(final String query) throws MalformedObjectNameException {
+    static Set<ObjectName> queryNames(final String query) throws MalformedObjectNameException {
         final ObjectName objectNameQuery = new ObjectName(query);
         Set<ObjectName> names = new HashSet<>();
 
@@ -199,7 +198,7 @@ public class JmxHelper {
      *
      * @param objectName The object name of the MBean to unregister.
      */
-    public static void unregister(final String objectName) {
+    private static void unregister(final String objectName) {
         try {
             getPlatformMBeanServer().unregisterMBean(new ObjectName(objectName));
         } catch (Exception e) {

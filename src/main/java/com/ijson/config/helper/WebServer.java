@@ -21,23 +21,23 @@ public class WebServer {
     public static final Logger log = LoggerFactory.getLogger(WebServer.class);
 
     public static boolean isTomcat() {
-        return JmxHelper.mbeanExists(catalina_type_server);
+        return JmxHelper.mbeanExists(CATALINA_TYPE_SERVER);
     }
 
-    public static boolean isJBoss() {
-        return JmxHelper.mbeanExists(jboss_system_type_server);
+    public static boolean isJboss() {
+        return JmxHelper.mbeanExists(JBOSS_SYSTEM_TYPE_SERVER);
     }
 
     public static boolean isJetty() {
-        return JmxHelper.mbeanExists(org_mortbay_jetty_type_server_id);
+        return JmxHelper.mbeanExists(ORG_MORTBAY_JETTY_TYPE_SERVER_ID);
     }
 
     public static boolean isJetty5() {
-        return JmxHelper.mbeanExists(org_mortbay_jetty);
+        return JmxHelper.mbeanExists(ORG_MORTBAY_JETTY);
     }
 
     public static boolean isResin() {
-        return JmxHelper.mbeanExists(resin_type);
+        return JmxHelper.mbeanExists(RESIN_TYPE);
     }
 
     public static boolean isGlassfish() {
@@ -171,7 +171,7 @@ public class WebServer {
             selectors = JmxHelper.queryNames(name);
             if (selectors.isEmpty()) {
                 sleep(1000L);
-                log.info("query({}), try {} times, waiting {} seconds {}", name, tries, tries);
+                log.info("name:{},tries:{}", name, tries);
             } else {
                 return selectors;
             }
@@ -186,7 +186,7 @@ public class WebServer {
      * @throws Exception 识别端口过程中可能出现的异常
      */
     public static Integer getHttpPort() throws Exception {
-        if (WebServer.isTomcat() || WebServer.isJBoss()) {
+        if (WebServer.isTomcat() || WebServer.isJboss()) {
             return WebServer.getTomcatHttpPort();
         }
         if (WebServer.isResin()) {

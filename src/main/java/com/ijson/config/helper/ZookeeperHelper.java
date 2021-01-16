@@ -190,7 +190,7 @@ public class ZookeeperHelper {
         }
     }
 
-    public static List<ACL> getACL(CuratorFramework client, String path) {
+    public static List<ACL> getAcl(CuratorFramework client, String path) {
         try {
             return client.getACL().forPath(path);
         } catch (KeeperException.NoNodeException ignored) {
@@ -200,7 +200,7 @@ public class ZookeeperHelper {
         return null;
     }
 
-    public static void setACL(CuratorFramework client, String path, List<ACL> acls) {
+    public static void setAcl(CuratorFramework client, String path, List<ACL> acls) {
         try {
             client.setACL().withACL(acls).forPath(path);
         } catch (KeeperException.NoNodeException ignored) {

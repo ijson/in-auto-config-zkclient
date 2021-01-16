@@ -1,15 +1,15 @@
 package com.ijson.config.api;
 
 public interface IZkResolver {
-  boolean isEnable();
+    boolean isEnable();
 
-  String getServer();
+    String getServer();
 
-  String getAuth();
+    String getAuth();
 
-  String getAuthType();
+    String getAuthType();
 
-  String getBasePath();
+    String getBasePath();
 
-  void resolve();
+    void resolve();
 }
