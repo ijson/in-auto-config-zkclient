@@ -2,6 +2,9 @@ package com.ijson.config.api;
 
 import java.nio.file.Path;
 
+/**
+ * @author *
+ */
 public interface IFileListener {
     /**
      * 文件修改通知

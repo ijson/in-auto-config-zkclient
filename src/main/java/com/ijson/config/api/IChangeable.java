@@ -1,5 +1,7 @@
 package com.ijson.config.api;
-
+/**
+ * @author *
+ */
 public interface IChangeable {
     /**
      * 注册更新回调方法，并且会马上调用1次回调函数，避免外层还需要手动调用1次

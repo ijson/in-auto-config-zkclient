@@ -33,6 +33,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ijson.config.base.ConfigConstants.*;
 
+/**
+ * @author c
+ */
 public class ConfigHelper {
 
     public static final Logger log = LoggerFactory.getLogger(ConfigHelper.class);
@@ -76,7 +79,10 @@ public class ConfigHelper {
         try {
             return (InetAddress.getLocalHost()).getHostName();
         } catch (UnknownHostException uhe) {
-            String host = uhe.getMessage(); // host = "hostname: hostname"
+            /**
+             * host = "hostname: hostname"
+             */
+            String host = uhe.getMessage();
             if (host != null) {
                 int colon = host.indexOf(':');
                 if (colon > 0) {
@@ -107,7 +113,7 @@ public class ConfigHelper {
         }
         //查找若干文件以便找到classes根目录
         String files = ConfigConstants.CONFIG_FILES;
-        for (String i : Splitter.on(',').split(files)) {
+        for (String i : Splitter.on(COMMA).split(files)) {
             String s = scanResource(i);
             if (s != null) {
                 basePath = new File(s).toPath().getParent().resolve(ConfigConstants.AUTO_CONF);

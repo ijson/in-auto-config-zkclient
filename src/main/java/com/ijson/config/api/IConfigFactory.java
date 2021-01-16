@@ -4,11 +4,13 @@ import java.util.List;
 
 /**
  * Created by cuiyongxu on 17/8/26.
+ * @author *
  */
 public interface IConfigFactory {
 
     /**
      * 获取配置全部文件
+     * @return 需要对每个配置文件进行转换
      */
     List<IChangeableConfig> getAllConfig();
 

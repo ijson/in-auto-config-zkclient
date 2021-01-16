@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.ijson.config.api.IZkResolver;
 import com.ijson.config.base.Config;
-import com.ijson.config.base.ConfigConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +20,11 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.ijson.config.base.ConfigConstants.ConfKeys.*;
-import static com.ijson.config.base.ConfigConstants.Ijson.CONFIG_URL;
 import static com.ijson.config.base.ConfigConstants.*;
 
-
+/**
+ * @author *
+ */
 public class ConfigZkResolver extends ConfigurableZkResolver {
 
     public static final Logger log = LoggerFactory.getLogger(ConfigZkResolver.class);
@@ -32,22 +32,22 @@ public class ConfigZkResolver extends ConfigurableZkResolver {
     @Override
     protected void customSettings(ByteArrayOutputStream out) {
         Config appConfig = ConfigHelper.getApplicationConfig();
-        String CONFIG_URL = appConfig.get(Ijson.CONFIG_URL);
+        String configUrl = appConfig.get(Ijson.CONFIG_URL);
 
-        if (Strings.isNullOrEmpty(CONFIG_URL)) {
-            CONFIG_URL = System.getProperty(Ijson.CONFIG_URL);
+        if (Strings.isNullOrEmpty(configUrl)) {
+            configUrl = System.getProperty(Ijson.CONFIG_URL);
         }
-        if (Strings.isNullOrEmpty(CONFIG_URL)) {
-            CONFIG_URL = Ijson.CONFIG_URL;
+        if (Strings.isNullOrEmpty(configUrl)) {
+            configUrl = Ijson.CONFIG_URL;
         }
         String name = appConfig.get(PROCESS_PROFILE);
-        if (!Strings.isNullOrEmpty(appConfig.get("custom.zk.server.url"))) {
-            CONFIG_URL = appConfig.get("custom.zk.server.url");
+        if (!Strings.isNullOrEmpty(appConfig.get(ZK_SERVER_URL))) {
+            configUrl = appConfig.get(ZK_SERVER_URL);
         }
         if (Strings.isNullOrEmpty(name)) {
             name = IN_ZOOKEEPER;
         }
-        String s = CONFIG_URL + "?profile=" + appConfig.get(PROCESS_PROFILE, DEVELOP) + "&name=" + name;
+        String s = configUrl + "?profile=" + appConfig.get(PROCESS_PROFILE, DEVELOP) + "&name=" + name;
         fetchContent(s, out);
     }
 

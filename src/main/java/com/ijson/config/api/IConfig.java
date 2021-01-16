@@ -5,6 +5,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author *
+ */
 public interface IConfig {
     /**
      * 获取配置名
@@ -13,6 +16,12 @@ public interface IConfig {
      */
     String getName();
 
+    /**
+     * 获取int 值
+     *
+     * @param key
+     * @return 如若是int 则返回,否则返回0
+     */
     int getInt(String key);
 
     /**
@@ -24,6 +33,12 @@ public interface IConfig {
      */
     int getInt(String key, int defaultVal);
 
+    /**
+     * 返回long值
+     *
+     * @param key
+     * @return 如果是long 类型 则返回  否则返回0L
+     */
     long getLong(String key);
 
     /**
@@ -35,6 +50,12 @@ public interface IConfig {
      */
     long getLong(String key, long defaultVal);
 
+    /**
+     * 返回布尔值类型
+     *
+     * @param key
+     * @return 通过配置值获取对应值
+     */
     boolean getBool(String key);
 
     /**
@@ -46,6 +67,12 @@ public interface IConfig {
      */
     boolean getBool(String key, boolean defaultVal);
 
+    /**
+     * 获取double值
+     *
+     * @param key
+     * @return 非double 返回0.0
+     */
     double getDouble(String key);
 
     /**

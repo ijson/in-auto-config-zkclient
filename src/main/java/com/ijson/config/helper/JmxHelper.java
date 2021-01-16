@@ -10,6 +10,9 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static java.lang.management.ManagementFactory.getPlatformMBeanServer;
 
+/**
+ * @author *
+ */
 public class JmxHelper {
 
     private static MBeanServer findBeanServer(final ObjectName objectName) {

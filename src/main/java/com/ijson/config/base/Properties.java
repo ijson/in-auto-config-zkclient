@@ -6,6 +6,9 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 
+/**
+ * @author *
+ */
 public class Properties {
     private Map<String, String> m = ImmutableMap.of();
 

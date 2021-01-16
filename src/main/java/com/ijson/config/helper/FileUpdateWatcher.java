@@ -18,6 +18,9 @@ import static java.nio.charset.CoderResult.OVERFLOW;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
+/**
+ * @author *
+ */
 public class FileUpdateWatcher implements Runnable, AutoCloseable {
 
 

@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
+ * @author **
  * Created by cuiyongxu on 18/5/19.
  */
 public interface ConfigConstants {
@@ -33,6 +34,9 @@ public interface ConfigConstants {
     String COMPUTER_NAME = "COMPUTERNAME";
     String UNKNOWN_HOST = "UnknownHost";
     List<String> APPLICATION_FILES = Lists.newArrayList("application-default.properties", "application.properties");
+    Integer CACHE_FILE_SIZE = 2;
+    Integer TRIES_GET_SERVER_NAME = 30;
+    Character COMMA = ',';
 
     interface ConfKeys {
         String CONFIG_ENABLE_ZOOKEEPER = "zk.enable";
@@ -42,6 +46,7 @@ public interface ConfigConstants {
         String ZOOKEEPER_BASE_PATH = "zk.basePath";
         String IN_ZOOKEEPER = "in-zookeeper";
         String CONFIG_URL = "config.url";
+        String ZK_SERVER_URL = "custom.zk.server.url";
     }
 
 

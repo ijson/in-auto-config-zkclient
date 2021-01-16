@@ -17,6 +17,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
+/**
+ * @author cuiyongxu
+ */
+@SuppressWarnings({"ALL", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class AbstractConfigFactory implements IConfigFactory {
     private final ConcurrentMap<String, IChangeableConfig> m = Maps.newConcurrentMap();
 

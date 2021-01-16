@@ -9,13 +9,16 @@ import javax.management.ObjectName;
 import java.util.Collection;
 
 import static com.ijson.config.base.ConfigConstants.Jmx.*;
+import static com.ijson.config.base.ConfigConstants.TRIES_GET_SERVER_NAME;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Thread.sleep;
 
-
+/**
+ * @author *
+ */
 public class WebServer {
 
     public static final Logger log = LoggerFactory.getLogger(WebServer.class);
@@ -167,7 +170,7 @@ public class WebServer {
 
     public static Collection<ObjectName> getSelectors(String name) throws Exception {
         Collection<ObjectName> selectors;
-        for (int tries = 1; tries <= 30; tries++) {
+        for (int tries = 1; tries <= TRIES_GET_SERVER_NAME; tries++) {
             selectors = JmxHelper.queryNames(name);
             if (selectors.isEmpty()) {
                 sleep(1000L);

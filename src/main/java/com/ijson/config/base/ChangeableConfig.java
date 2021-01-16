@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Set;
 
+/**
+ * @author cuiyongxu
+ */
 public class ChangeableConfig extends Config implements IChangeableConfig {
 
     public static final Logger log = LoggerFactory.getLogger(ChangeableConfig.class);

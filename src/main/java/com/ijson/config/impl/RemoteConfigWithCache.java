@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import static com.ijson.config.base.ConfigConstants.CACHE_FILE_SIZE;
+
+/**
+ * @author *
+ */
 public class RemoteConfigWithCache extends RemoteConfig {
 
 
@@ -39,7 +44,7 @@ public class RemoteConfigWithCache extends RemoteConfig {
     @Override
     public void loadAndWatchChanges() {
         //有本地配置就先从本地加载
-        if (cacheFile.exists() && cacheFile.length() > 2) {
+        if (cacheFile.exists() && cacheFile.length() > CACHE_FILE_SIZE) {
             try {
                 copyOf(Files.toByteArray(cacheFile));
                 FACTORY.newThread(() -> {
@@ -79,7 +84,8 @@ public class RemoteConfigWithCache extends RemoteConfig {
     @Override
     protected void reload(byte[] content) {
         //避免首次启动,远程配置不存在反而覆盖了本地配置
-        if ((content == null || content.length == 0) && !loadedFromZookeeper) {
+        boolean contentEmpty = content == null || content.length == 0;
+        if (contentEmpty && !loadedFromZookeeper) {
             log.warn("{} deleted, wont clean local for safety", getPath());
             return;
         }

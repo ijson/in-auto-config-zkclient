@@ -1,6 +1,7 @@
 package com.ijson.config.api;
 
 /**
+ * @author *
  * Created by cuiyongxu on 17/8/26.
  */
 public interface IChangeableConfig extends IConfig, IChangeable {

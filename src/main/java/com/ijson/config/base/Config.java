@@ -13,6 +13,9 @@ import java.util.Map;
 
 import static com.ijson.config.base.ConfigConstants.UTF8;
 
+/**
+ * @author cuiyongxu
+ */
 public class Config extends Properties {
 
     public static final Logger log = LoggerFactory.getLogger(Config.class);
@@ -105,7 +108,11 @@ public class Config extends Properties {
         }
     }
 
-    /* copyFrom StringEscapeUtils.unescapeJava */
+    /**
+     * copyFrom StringEscapeUtils.unescapeJava
+     * @param value
+     * @return
+     */
     private String unEscapeJava(String value) {
         if (value == null || value.length() == 0) {
             return value;

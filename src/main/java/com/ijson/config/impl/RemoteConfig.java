@@ -15,6 +15,9 @@ import java.util.List;
 
 import static com.ijson.config.helper.ZookeeperHelper.getCurator;
 
+/**
+ * @author *
+ */
 public class RemoteConfig extends ChangeableConfig {
 
     public static final Logger log = LoggerFactory.getLogger(RemoteConfig.class);
