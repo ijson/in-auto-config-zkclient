@@ -1,3 +1,6 @@
+
+# 因github国内无法正常使用 本项目废弃,该项目被迁移至:https://gitee.com/ijson/in-auto-config-zkclient, 感谢各位支持
+
 ### 自动拉取配置客户端
 
 >  本项目为 [in配置自动化服务端](https://github.com/ijson/in-auto-config) 服务的客户端,也可作为本地配置文件读取工具使用
@@ -17,7 +20,7 @@
 <dependency>
   <groupId>com.ijson.common</groupId>
   <artifactId>in-auto-config-zkclient</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.9</version>
 </dependency>
 ```
 
